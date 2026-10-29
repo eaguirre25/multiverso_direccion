@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CutoutTitle } from './Cutout';
-import { Flow, curve, pt, type FlowPath } from './Flow';
+import { Flow, curve, pt, useReducedMotion, type FlowPath } from './Flow';
 import { AcademicReference } from './AcademicReference';
 import { portals, stories, type RefKey } from '../data/presentation';
 
@@ -90,88 +90,112 @@ function S3() {
   </>;
 }
 
-/* 4 · Dos trayectorias que se aproximan, se cruzan, se separan y se reconectan */
+/* 4 · Una trama institucional de la que surgen dos trayectorias que se encuentran sin fundirse */
 function S4() {
-  const A = 'M90 150 C 330 150 380 329 500 329 S 760 515 910 515';
-  const B = 'M910 150 C 670 150 620 329 500 329 S 240 515 90 515';
-  const A2 = 'M90 150 C 300 190 400 329 500 329 S 720 480 910 515';
-  const B2 = 'M910 150 C 700 190 600 329 500 329 S 280 480 90 515';
+  const [hot, setHot] = useState<string | null>(null);
+  const ESC: Pos = [21, 11], ITED: Pos = [50, 25], DOC: Pos = [79, 11], DIR: Pos = [19, 52], INV: Pos = [82, 52], COP: Pos = [50, 87];
   const paths: FlowPath[] = [
-    { id: 'A', d: A, d2: A2, n: 4, dur: 9, dir: 0, hue: 38, width: 1.4, tags: ['d'] },
-    { id: 'B', d: B, d2: B2, n: 4, dur: 10, dir: 0, hue: 185, width: 1.4, tags: ['i'], delay: 0.4 },
-    { id: 'r1', d: 'M250 470 C 330 560 670 560 750 470', n: 3, dur: 7, dir: 0, hue: 300, dash: true, delay: 1 },
-    { id: 'r2', d: 'M250 470 C 330 380 400 400 500 329', n: 2, dur: 6, dir: 0, hue: 300, dash: true, delay: 1.2 },
-    { id: 'r3', d: 'M750 470 C 670 380 600 400 500 329', n: 2, dur: 6.4, dir: 0, hue: 300, dash: true, delay: 1.4 },
+    { id: 'e-i', ...link(ESC, ITED, 30, 20), n: 3, dur: 8, dir: 0, hue: 40, tags: ['trama'] },
+    { id: 'i-d', ...link(ITED, DOC, 30, 20), n: 3, dur: 9, dir: 0, hue: 185, tags: ['trama'], delay: 0.2 },
+    { id: 'e-d', ...link(ESC, DOC, -34, 22), n: 3, dur: 11, dir: 0, hue: 300, tags: ['trama'], delay: 0.4 },
+    { id: 'e-dir', ...link([ESC[0], ESC[1] + 5], [DIR[0] + 1, DIR[1] - 7], 20, 20), n: 3, dur: 7, dir: 0, hue: 38, width: 1.4, tags: ['dir'], delay: 0.8 },
+    { id: 'd-inv', ...link([DOC[0], DOC[1] + 5], [INV[0] - 1, INV[1] - 7], -20, 20), n: 3, dur: 8, dir: 0, hue: 185, width: 1.4, tags: ['inv'], delay: 1 },
+    { id: 'i-dir', ...link([ITED[0] - 4, ITED[1] + 4], [DIR[0] + 6, DIR[1] - 6], -26, 22), n: 2, dur: 9, dir: 0, hue: 40, tags: ['dir', 'trama'], delay: 1.2 },
+    { id: 'i-inv', ...link([ITED[0] + 4, ITED[1] + 4], [INV[0] - 6, INV[1] - 6], 26, 22), n: 2, dur: 10, dir: 0, hue: 185, tags: ['inv', 'trama'], delay: 1.3 },
+    { id: 'dir-cop', ...link([DIR[0] + 4, DIR[1] + 7], [COP[0] - 8, COP[1] - 5], -36, 30), n: 3, dur: 7, dir: 0, hue: 38, width: 1.4, tags: ['dir', 'cop'], delay: 1.7 },
+    { id: 'inv-cop', ...link([INV[0] - 4, INV[1] + 7], [COP[0] + 8, COP[1] - 5], 36, 30), n: 3, dur: 8, dir: 0, hue: 185, width: 1.4, tags: ['inv', 'cop'], delay: 1.8 },
+    { id: 'dif', ...link([DIR[0] + 9, DIR[1]], [INV[0] - 9, INV[1]], -60, 40), n: 4, dur: 10, dir: 0, hue: 330, dash: true, tags: ['dif'], delay: 2.2 },
   ];
+  const on = (k: string) => ({ onEnter: () => setHot(k), onLeave: () => setHot(null), focusable: true, on: hot === k });
   return <>
-    <Flow paths={paths} />
-    <Scrap t="COPRODUCCIÓN NARRATIVA" x={50} y={6} r={-1} paper="black" font="didone" s={1.1} d={150} />
-    <Scrap t="una directora" x={12} y={17} r={-3} paper="ochre" font="didone" s={1.1} d={300} />
-    <Scrap t="un investigador" x={83} y={17} r={3} paper="teal" font="grot" s={1} d={450} />
-    <Scrap t="perspectivas parciales" x={24} y={37} r={-3} paper="cream" font="ital" d={700} />
-    <Scrap t="conocimientos situados" x={76} y={37} r={3} paper="white" font="news" d={850} />
-    <Scrap t="ESCRITURA COMPARTIDA" x={50} y={47} r={0} paper="red" font="cond" s={1.1} d={1000} className="core" />
-    <Scrap t="hacer-con" x={50} y={60} r={-2} paper="aged" font="slab" d={1150} />
-    <Scrap t="acuerdos y divergencias" x={50} y={84} r={2} paper="magenta" font="grot" s={0.95} d={1300} />
+    <Flow paths={paths} active={hot} />
+    <Scrap t="ESCUELAS SECUNDARIAS" x={ESC[0]} y={ESC[1]} r={-3} paper="aged" font="slab" s={0.82} d={150} {...on('trama')} />
+    <Scrap t="ITED–UNSAM" x={ITED[0]} y={ITED[1]} r={2} paper="black" font="didone" s={1} d={300} {...on('trama')} />
+    <Scrap t="INVESTIGACIÓN DOCTORAL" x={DOC[0]} y={DOC[1]} r={3} paper="teal" font="grot" s={0.74} d={450} {...on('trama')} />
+    <Scrap t="DIRECTORA ESCOLAR" x={DIR[0]} y={DIR[1]} r={-2} paper="ochre" font="cond" s={0.9} d={800} {...on('dir')} />
+    <Scrap t="INVESTIGADOR" x={INV[0]} y={INV[1]} r={2} paper="cream" font="cond" s={1.1} d={950} {...on('inv')} />
+    <Scrap t="diferencias de posición" x={51} y={52} r={-1} paper="magenta" font="ital" s={0.7} d={1300} {...on('dif')} />
+    <Scrap t="perspectivas parciales" x={19} y={69} r={-3} paper="white" font="news" s={0.8} d={1500} />
+    <Scrap t="conocimientos situados" x={81} y={69} r={3} paper="news" font="type" s={0.8} d={1600} />
+    <Scrap t="COPRODUCCIÓN NARRATIVA" x={COP[0]} y={COP[1]} r={0} paper="red" font="cond" s={1.1} d={1900} className="core" {...on('cop')} />
+    <Scrap t="hacer-con" x={50} y={72} r={2} paper="aged" font="slab" s={0.85} d={1750} />
   </>;
 }
 
-/* 5 · Tres núcleos literarios con ficha bibliográfica desplegable -------- */
+/* 5 · Tres posibilidades narrativas, cada una con su propia animación ---- */
 function S5() {
   const [hot, setHot] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
-  const CORES: { k: string; name: string; at: Pos; concepts: string[]; ref: RefKey; paper: Paper; font: Font; up?: boolean }[] = [
-    { k: 'cor', name: 'JULIO CORTÁZAR', at: [21, 25], concepts: ['Concentración', 'Intensidad', 'Tensión narrativa'], ref: 'cortazar1971', paper: 'aged', font: 'didone' },
-    { k: 'pig', name: 'RICARDO PIGLIA', at: [79, 25], concepts: ['Dos historias', 'Elipsis', 'Intersticios narrativos'], ref: 'piglia2000', paper: 'teal', font: 'slab' },
-    { k: 'bor', name: 'JORGE LUIS BORGES', at: [50, 82], concepts: ['Bifurcaciones temporales', 'Coexistencia de tiempos posibles'], ref: 'borges1974', paper: 'red', font: 'cond', up: true },
+  const CORES: { k: string; name: string; gloss: string; author: string; x: number; ref: RefKey; paper: Paper; font: Font }[] = [
+    { k: 'cor', name: 'CONCENTRACIÓN', gloss: 'Intensidad y concentración narrativa', author: 'Julio Cortázar', x: 17, ref: 'cortazar1971', paper: 'aged', font: 'cond' },
+    { k: 'pig', name: 'ELIPSIS', gloss: 'La historia visible y otra construida indirectamente', author: 'Ricardo Piglia', x: 50, ref: 'piglia2000', paper: 'teal', font: 'didone' },
+    { k: 'bor', name: 'BIFURCACIONES', gloss: 'Temporalidades divergentes y coexistentes', author: 'Jorge Luis Borges', x: 83, ref: 'borges1974', paper: 'red', font: 'cond' },
   ];
-  const C: Pos = [50, 53];
+  const AY = 79;
   const paths: FlowPath[] = [
-    ...CORES.map((c, i) => ({ id: `c${i}`, ...link(c.at, C, i === 2 ? 0 : (i ? 60 : -60), 20), n: 4, dur: 6 + i, dir: 0 as const, hue: [40, 175, 340][i], tags: [c.k], width: 1.4 } as FlowPath)),
-    { id: 'cp', ...link(CORES[0].at, CORES[1].at, -90, 30), n: 3, dur: 9, dir: 0, hue: 270, dash: true, tags: ['cor', 'pig'] },
-    { id: 'pb', ...link(CORES[1].at, CORES[2].at, -80, 30), n: 3, dur: 10, dir: 0, hue: 270, dash: true, tags: ['pig', 'bor'] },
-    { id: 'bc', ...link(CORES[2].at, CORES[0].at, -80, 30), n: 3, dur: 11, dir: 0, hue: 270, dash: true, tags: ['bor', 'cor'] },
+    ...CORES.map((c, i) => ({ id: `t${i}`, ...link([50, 19], [c.x, 24], i === 1 ? 0 : (i ? -30 : 30), 10), n: 2, dur: 6 + i, dir: 0 as const, hue: [40, 175, 340][i], tags: [c.k], delay: i * 0.2 } as FlowPath)),
+    // concentración: fragmentos que convergen y se intensifican
+    ...[0, 1, 2, 3, 4, 5].map(i => { const a = (i / 6) * Math.PI * 2; return { id: `c${i}`, ...link([17 + Math.cos(a) * 12, AY + Math.sin(a) * 14], [17, AY], 0, 0), n: 2, dur: 3 + (i % 3) * 0.4, shape: 'paper' as const, hue: 40, tags: ['cor'], delay: i * 0.1 } as FlowPath; }),
+    // elipsis: una trayectoria visible y otra que aparece y desaparece
+    { id: 'e1', ...link([37, AY - 3], [63, AY - 3], 0, 8), n: 4, dur: 6, dir: 1, hue: 175, width: 1.4, tags: ['pig'] },
+    { id: 'e2', ...link([37, AY + 7], [63, AY + 7], -30, 20), n: 4, dur: 7, dir: 0, hue: 300, dash: true, blink: true, tags: ['pig'], delay: 0.5 },
+    // bifurcaciones: caminos que se dividen
+    { id: 'b0', ...link([71, AY], [80, AY], 0, 0), n: 2, dur: 3, hue: 340, width: 1.5, tags: ['bor'] },
+    { id: 'b1', ...link([80, AY], [95, AY - 15], 24, 12), n: 2, dur: 5, hue: 20, tags: ['bor'], delay: 0.3 },
+    { id: 'b2', ...link([80, AY], [95, AY], 0, 8), n: 2, dur: 7, hue: 330, tags: ['bor'], delay: 0.6 },
+    { id: 'b3', ...link([80, AY], [95, AY + 15], -24, 12), n: 2, dur: 9, hue: 280, tags: ['bor'], delay: 0.9 },
   ];
   return <>
     <Flow paths={paths} active={hot} />
-    <div className="art-center art-center-s5" style={{ left: `${C[0]}%`, top: `${C[1]}%` }}><CutoutTitle text="¿POR QUÉ CUENTOS?" max={13} seed={77} mode="letters" /></div>
-    {CORES.map((c, i) => <div key={c.k} className={`core-card${hot === c.k ? ' core-hot' : ''}${open === c.k ? ' core-open' : ''}`} style={{ left: `${c.at[0]}%`, top: `${c.at[1]}%`, ['--d' as string]: `${300 + i * 200}ms` }}
+    <div className="art-center art-center-s5" style={{ left: '50%', top: '9%' }}><CutoutTitle text="UNA ESCENA, MÚLTIPLES HISTORIAS" max={13} seed={77} mode="letters" /></div>
+    {CORES.map((c, i) => <div key={c.k} className={`core-card${hot === c.k ? ' core-hot' : ''}${open === c.k ? ' core-open' : ''}`} style={{ left: `${c.x}%`, top: '40%', ['--d' as string]: `${300 + i * 200}ms` }}
       onMouseEnter={() => setHot(c.k)} onMouseLeave={() => setHot(null)} onFocus={() => setHot(c.k)} onBlur={() => setHot(null)}>
       <span className={`core-name p-${c.paper} f-${c.font}`}>{c.name}</span>
-      <ul>{c.concepts.map(t => <li key={t}>{t}</li>)}</ul>
-      <AcademicReference k={c.ref} open={open === c.k} onToggle={() => setOpen(open === c.k ? null : c.k)} popover up={c.up} />
+      <p className="core-gloss">{c.gloss}</p>
+      <p className="core-author">{c.author}</p>
+      <AcademicReference k={c.ref} open={open === c.k} onToggle={() => setOpen(open === c.k ? null : c.k)} popover />
     </div>)}
   </>;
 }
 
-/* 6 · Constelación de presencias vivas, objetos y otras presencias ------- */
+/* 6 · Una escuela entre presencias heterogéneas que se reorganizan ------- */
+const GLYPHS: Record<string, React.ReactNode> = {
+  personas: <><circle cx="50" cy="34" r="16" /><path d="M20 86c0-20 14-30 30-30s30 10 30 30z" /></>,
+  organismos: <><path d="M50 90C22 62 24 28 50 8c26 20 28 54 0 82z" /><path d="M50 90V30" className="gl-vein" /></>,
+  objetos: <><path d="M28 14h44v38H28z" /><path d="M32 52v36M68 52v36M28 70h44" className="gl-line" /></>,
+  tecnologías: <><rect x="12" y="20" width="76" height="48" rx="4" /><path d="M34 84h32M50 68v16" className="gl-line" /></>,
+  espacios: <><path d="M14 88V44L50 12l36 32v44z" /><path d="M42 88V62h16v26" className="gl-door" /></>,
+  afectos: <path d="M50 88C12 58 16 24 36 22c8 0 14 6 14 12 0-6 6-12 14-12 20 2 24 36-14 66z" />,
+  materialidades: <><rect x="12" y="24" width="36" height="20" /><rect x="52" y="24" width="36" height="20" /><rect x="30" y="48" width="36" height="20" /><rect x="12" y="72" width="36" height="18" /><rect x="52" y="72" width="36" height="18" /></>,
+};
+const S6_KIND: Record<string, 'vivo' | 'objeto' | 'otro'> = { personas: 'vivo', organismos: 'vivo', objetos: 'objeto', tecnologías: 'objeto', espacios: 'objeto', materialidades: 'objeto', afectos: 'otro' };
 function S6() {
+  const rm = useReducedMotion();
   const [hot, setHot] = useState<string | null>(null);
-  type Kind = 'vivo' | 'objeto' | 'otro';
-  const N: Record<string, { p: Pos; kind: Kind; img?: string; paper: Paper; font: Font; r: number }> = {
-    neuronas: { p: [14, 24], kind: 'vivo', img: stories[0].image, paper: 'teal', font: 'ital', r: -4 },
-    hongos: { p: [46, 12], kind: 'vivo', img: stories[1].image, paper: 'teal', font: 'type', r: 3 },
-    aves: { p: [84, 22], kind: 'vivo', img: './assets/fauna/gorrion.png', paper: 'teal', font: 'grot', r: -3 },
-    puerta: { p: [90, 54], kind: 'objeto', img: stories[2].image, paper: 'ochre', font: 'didone', r: 3 },
-    mate: { p: [80, 84], kind: 'objeto', img: stories[4].image, paper: 'ochre', font: 'slab', r: -3 },
-    tecnologías: { p: [47, 85], kind: 'otro', paper: 'magenta', font: 'type', r: 2 },
-    monstruo: { p: [18, 82], kind: 'otro', img: stories[3].image, paper: 'magenta', font: 'cond', r: -3 },
-    afectos: { p: [8, 54], kind: 'otro', paper: 'magenta', font: 'didone', r: 3 },
-  };
-  const E: [string, string, number][] = [['neuronas', 'hongos', 30], ['hongos', 'aves', -40], ['aves', 'puerta', 40], ['puerta', 'mate', -40], ['mate', 'tecnologías', 30], ['tecnologías', 'monstruo', -30], ['monstruo', 'afectos', 40], ['afectos', 'neuronas', -40], ['hongos', 'puerta', 110], ['neuronas', 'monstruo', 120], ['aves', 'mate', 120], ['afectos', 'hongos', -90], ['tecnologías', 'puerta', 70]];
-  const paths: FlowPath[] = E.map(([a, b, bend], i) => ({ id: `${a}-${b}`, ...link(N[a].p, N[b].p, bend, 30), tags: [a, b], n: 2, dur: 6 + (i * 1.7) % 7, dir: i % 2 ? 1 : -1, hue: N[a].kind === 'vivo' ? 150 : N[a].kind === 'objeto' ? 40 : 320, delay: i * 0.1 }));
+  const [cfg, setCfg] = useState(0);
+  useEffect(() => { if (rm) return; const id = window.setInterval(() => setCfg(c => (c + 1) % 3), 7000); return () => window.clearInterval(id); }, [rm]);
+  const names = Object.keys(GLYPHS);
+  const C: Pos = [50, 48];
+  const P: Record<string, Pos> = {};
+  names.forEach((n, i) => { const a = (i / names.length) * Math.PI * 2 - Math.PI / 2; P[n] = [C[0] + Math.cos(a) * 39, C[1] + Math.sin(a) * 36]; });
+  P.escuela = C;
+  // tres configuraciones de la trama: las asociaciones se reorganizan con el tiempo
+  const CFG: [string, string][][] = names.length ? [
+    [...names.map((n, i) => [n, names[(i + 1) % 7]] as [string, string]), ['escuela', 'personas'], ['escuela', 'tecnologías'], ['escuela', 'afectos']],
+    [...names.map((n, i) => [n, names[(i + 2) % 7]] as [string, string]), ['escuela', 'objetos'], ['escuela', 'espacios']],
+    [...names.map((n, i) => [n, names[(i + 3) % 7]] as [string, string]), ['escuela', 'organismos'], ['escuela', 'materialidades'], ['escuela', 'personas']],
+  ] : [];
+  const paths: FlowPath[] = CFG[cfg].map(([a, b], i) => ({ id: `${cfg}-${a}-${b}`, ...link(P[a], P[b], (i % 2 ? 1 : -1) * (30 + (i * 13) % 50), 34), tags: [a, b], n: 2, dur: 5 + (i * 1.9) % 6, dir: (i % 3 === 0 ? 0 : i % 2 ? 1 : -1) as 0 | 1 | -1, hue: S6_KIND[a] === 'vivo' ? 150 : S6_KIND[a] === 'objeto' ? 40 : 320, delay: i * 0.08 }));
   return <>
     <Flow paths={paths} active={hot} />
-    <div className="coral-core" aria-hidden="false">
-      <Scrap t="NARRATIVA CORAL" x={50} y={38} r={-2} paper="cream" font="didone" s={1.15} d={200} />
-      <Scrap t="MULTIPLICIDADES" x={50} y={50} r={2} paper="black" font="cond" s={1.2} d={350} />
-      <Scrap t="PRESENCIAS MÁS-QUE-HUMANAS" x={50} y={62} r={-1} paper="aged" font="slab" s={0.95} d={500} />
-    </div>
-    {Object.entries(N).map(([k, v], i) => <span key={k} className={`pres pres-${v.kind}${hot && hot !== k ? ' pres-dim' : ''}`}>
-      {v.img && <img className={`cameo cameo-${v.kind}`} src={v.img} alt="" style={{ left: `${v.p[0]}%`, top: `${v.p[1] - 8}%` }} />}
-      <Scrap t={k} x={v.p[0]} y={v.p[1] + (v.img ? 4 : 0)} r={v.r} paper={v.paper} font={v.font} d={300 + i * 80} focusable on={hot === k} onEnter={() => setHot(k)} onLeave={() => setHot(null)} />
-    </span>)}
-    <ul className="legend" aria-label="Tipos de presencia"><li className="lg-vivo">organismos</li><li className="lg-objeto">objetos</li><li className="lg-otro">otras presencias</li></ul>
+    <img className="s6-school" src="./assets/school/escuela-flotante.svg" alt="La escuela, nodo destacado de la trama" style={{ left: `${C[0]}%`, top: `${C[1]}%` }} />
+    <Scrap t="MULTIPLICIDAD DE PERSPECTIVAS" x={21} y={3} r={-1} paper="black" font="didone" s={0.6} d={200} />
+    <Scrap t="PRESENCIAS MÁS-QUE-HUMANAS" x={74} y={98} r={1} paper="aged" font="slab" s={0.78} d={350} />
+    {names.map((n, i) => { const k = S6_KIND[n]; return <span key={n} className={`pres pres-${k}${hot && hot !== n ? ' pres-dim' : ''}`}>
+      <svg className={`glyph glyph-${k}`} viewBox="0 0 100 100" style={{ left: `${P[n][0]}%`, top: `${P[n][1] - 5}%` }} aria-hidden="true">{GLYPHS[n]}</svg>
+      <Scrap t={n} x={P[n][0]} y={P[n][1] + 5} r={(i % 2 ? 3 : -3)} paper={k === 'vivo' ? 'teal' : k === 'objeto' ? 'ochre' : 'magenta'} font={(['ital', 'type', 'slab', 'grot', 'didone', 'cond', 'news'] as Font[])[i]} s={0.85} d={300 + i * 90} focusable on={hot === n} onEnter={() => setHot(n)} onLeave={() => setHot(null)} />
+    </span>; })}
+    <ul className="legend legend-s6" aria-label="Tipos de presencia"><li className="lg-vivo">vivas</li><li className="lg-objeto">materiales</li><li className="lg-otro">afectivas</li></ul>
   </>;
 }
 
@@ -259,6 +283,7 @@ export function StoryScene({ selected, onSelect }: { selected: number | null; on
         <p className="eyebrow">CUENTO {String((selected ?? 0) + 1).padStart(2, '0')}</p>
         <h2>{s.title}</h2>
         <p className="sd-desc">{s.description}</p>
+        <p className="sd-mood"><b>Atmósfera</b>{s.mood}</p>
         <p className="sd-problem"><b>Problema que permite interrogar</b>{s.problem}</p>
         {s.ref && <SdRef k={s.ref} />}
       </div>

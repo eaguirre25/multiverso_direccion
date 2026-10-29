@@ -1,17 +1,19 @@
 export type RefKey = 'ball2003' | 'borges1974' | 'cortazar1971' | 'deleuze1988' | 'eco1990' | 'haraway1995' | 'haraway2019' | 'iser1987' | 'landri2021' | 'latour2008' | 'maclure2013' | 'mifsud2021' | 'niesche2013' | 'niesche2018' | 'piglia2000' | 'richardson2005' | 'stpierre2021a' | 'stpierre2021b' | 'stockwell2002';
 export type Reference = { cite: string; full: string };
-export type Ground = { concept: string; ref: RefKey };
-export type Story = { title: string; description: string; problem: string; ref?: RefKey; image: string; imageAlt: string };
-export type Portal = { id: number; title: string; short: string; description: string; notes: string; question?: string; concepts: string[]; ground: Ground[]; storyPortal?: boolean };
+/** Segmentos de un párrafo: texto corrido, noción destacada o cita APA con ficha bibliográfica. */
+export type Seg = { t: 'text'; v: string } | { t: 'em'; v: string } | { t: 'cite'; refs: RefKey[]; label?: string };
+export type Story = { title: string; description: string; mood: string; problem: string; ref?: RefKey; image: string; imageAlt: string };
+export type Portal = { id: number; title: string; short: string; pages: Seg[][]; question?: string; storyPortal?: boolean };
 
 export const presentation = {
   title: 'El multiverso de la dirección escolar',
   subtitle: 'Coproducción narrativa de cuentos desde la investigación postcualitativa',
   authors: ['Marcela Victoria Gil', 'Elías Gonzalo Aguirre'],
-  affiliations: 'Marcela V. Gil · EH-UNSAM  |  Elías Aguirre · LICH-EH-UNSAM / CONICET',
-  meeting: 'IV Congreso Internacional de Ciencias Humanas · UNSAM · 4 al 6 de noviembre de 2026 · Mesa 20',
-  book: 'Cuentos más-que-humanos sobre la dirección escolar',
-  context: 'Investigación doctoral sobre prácticas de dirección escolar en tres escuelas secundarias del conurbano bonaerense (2021–2025).',
+  congress: 'IV Congreso Internacional de Ciencias Humanas',
+  university: 'Universidad Nacional de San Martín',
+  table: 'Mesa 20',
+  tableTitle: 'Nuevos lenguajes y métodos creativos de investigación en la sociedad postmedia',
+  dates: '4 al 6 de noviembre de 2026',
 };
 
 /* Bibliografía exacta de la ponencia (APA 7). No se incorporan fuentes nuevas. */
@@ -41,114 +43,86 @@ export const references = Object.values(refs).map(r => r.full);
 
 export const portals: Portal[] = [
   { id: 1, title: '¿Cómo contar la dirección escolar?', short: 'Problema de investigación',
-    description: 'Las prácticas de dirección están hechas de relaciones simultáneas, materialidades, afectos y temporalidades. Las miradas centradas en quien dirige resultan insuficientes para narrarlas.',
-    question: '¿Cómo visibilizar una dirección hecha de relaciones simultáneas?',
-    concepts: ['Prácticas ordinarias', 'Asociaciones heterogéneas', 'Centralidad del sujeto director', 'Multiplicidad de relaciones'],
-    ground: [
-      { concept: 'Leader centrism y múltiples capas', ref: 'mifsud2021' },
-      { concept: 'Hegemonía del what works', ref: 'niesche2018' },
-      { concept: 'Asociaciones y mediación de objetos', ref: 'latour2008' },
-      { concept: 'Actor-red en la dirección', ref: 'landri2021' },
+    pages: [
+      [{ t: 'text', v: 'La dirección escolar se produce entre ' }, { t: 'em', v: 'relaciones simultáneas' }, { t: 'text', v: ': normativas, cuerpos, plataformas, arquitecturas, alimentos y afectos. Las lecturas centradas en la figura individual de quien dirige, cuestionadas por la crítica al ' }, { t: 'em', v: 'leader centrism' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['mifsud2021'] }, { t: 'text', v: ' y al predominio del ' }, { t: 'em', v: 'what works' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['niesche2018'] }, { t: 'text', v: ', encuentran allí un límite.' }],
+      [{ t: 'text', v: 'Seguir las ' }, { t: 'em', v: 'asociaciones heterogéneas' }, { t: 'text', v: ' y la mediación de los objetos ' }, { t: 'cite', refs: ['latour2008'] }, { t: 'text', v: ' —también en la dirección y el liderazgo educativo ' }, { t: 'cite', refs: ['landri2021'] }, { t: 'text', v: '— deja un problema narrativo: cómo contar esa multiplicidad sin dispersarla ni reducirla.' }],
     ],
-    notes: 'El trabajo nace de una encrucijada analítica en una investigación doctoral. Los discursos gerenciales y de liderazgo individual conviven con prácticas atravesadas por relaciones, regulaciones, espacios, tecnologías, cuerpos, alimentos y afectos. La pregunta no propone caricaturizar el liderazgo: busca narrar aquello que las categorías prescriptivas dejan fuera.' },
+    question: '¿Cómo visibilizar una dirección hecha de relaciones simultáneas?' },
   { id: 2, title: 'De la investigación a la escritura', short: 'Del análisis a la escritura',
-    description: 'La categorización permitió ordenar y comparar materiales, pero también separó relaciones que en la vida escolar se presentan a la vez. La escritura surgió como otra posibilidad de trabajo.',
-    question: '¿Cómo mantener juntas relaciones que el análisis había separado?',
-    concepts: ['INVESTIGACIÓN', 'CATEGORIZACIÓN', 'ESCRITURA'],
-    ground: [
-      { concept: 'Escritura como indagación', ref: 'richardson2005' },
-      { concept: 'Materialidad del lenguaje', ref: 'maclure2013' },
+    pages: [
+      [{ t: 'text', v: 'En la investigación doctoral, las categorías analíticas permitieron ordenar y comparar los materiales etnográficos, pero también introdujeron ' }, { t: 'em', v: 'cortes' }, { t: 'text', v: ': separaban relaciones que en la escuela ocurren a la vez.' }],
+      [{ t: 'text', v: 'La ' }, { t: 'em', v: 'escritura' }, { t: 'text', v: ' apareció en ese punto como otra posibilidad de trabajo, entendida como método de indagación ' }, { t: 'cite', refs: ['richardson2005'] }, { t: 'text', v: '. Interesa por la ' }, { t: 'em', v: 'materialidad del lenguaje' }, { t: 'text', v: ' y los problemas de representación que plantea ' }, { t: 'cite', refs: ['maclure2013'] }, { t: 'text', v: '.' }],
     ],
-    notes: 'Las categorías analíticas hicieron posible reconocer recurrencias, comparar y organizar materiales producidos durante años; también introdujeron cortes. Una llamada podía codificarse como interrupción administrativa aunque la escena involucrara una relación afectiva, un problema territorial, una urgencia institucional y una tecnología que extendía el espacio escolar. Los cuentos no formaban parte del diseño inicial: surgieron de un problema concreto de la investigación, cuando la dificultad para mantener juntas ciertas escenas comenzó a requerir otra forma de trabajo. La escritura no aparece como resultado automático de la codificación, sino como una posibilidad que emerge. El material etnográfico se menciona solo en la medida en que el argumento lo necesita.' },
+    question: '¿Cómo mantener juntas relaciones que el análisis había separado?' },
   { id: 3, title: 'De la etnografía a la ficción', short: 'Composición ficcional',
-    description: 'La composición ficcional transforma registros y experiencias mediante decisiones narrativas: condensa situaciones, modifica temporalidades, selecciona voces y reorganiza relaciones.',
-    concepts: ['REGISTROS', 'EXPERIENCIAS', 'IMAGINACIÓN', 'COMPOSICIÓN FICCIONAL'],
-    ground: [
-      { concept: 'Prácticas analíticas creativas', ref: 'mifsud2021' },
-      { concept: 'Crítica de la representación', ref: 'maclure2013' },
-      { concept: 'Experimentación postcualitativa', ref: 'stpierre2021a' },
-      { concept: 'Métodos predefinidos', ref: 'stpierre2021b' },
-    ],
-    notes: 'Los cuentos trabajan con materiales vinculados con situaciones observadas o recordadas, y su composición condensa escenas, modifica temporalidades, reúne elementos y selecciona voces. El vínculo con el trabajo empírico queda atravesado por decisiones narrativas. Fidelidad documental y productividad analítica remiten a criterios diferentes que conviven y entran en tensión dentro de una misma escritura. Explicitar qué se condensó, qué se reunió y qué resguardos se adoptaron forma parte del rigor.' },
+    pages: [
+      [{ t: 'text', v: 'La ' }, { t: 'em', v: 'composición ficcional' }, { t: 'text', v: ' transforma registros, experiencias y recuerdos mediante decisiones narrativas: condensa escenas, modifica temporalidades, reúne elementos y selecciona voces.' }],
+      [{ t: 'text', v: 'Se inscribe en las ' }, { t: 'em', v: 'prácticas analíticas creativas' }, { t: 'text', v: ', que cuestionan la expectativa de representar transparentemente «lo real» ' }, { t: 'cite', refs: ['mifsud2021'] }, { t: 'text', v: ', y en una investigación atenta a la materialidad del lenguaje ' }, { t: 'cite', refs: ['maclure2013'] }, { t: 'text', v: '. Su ' }, { t: 'em', v: 'experimentación postcualitativa' }, { t: 'text', v: ' rehúsa convertirse en un repertorio de métodos para aplicar ' }, { t: 'cite', refs: ['stpierre2021a', 'stpierre2021b'], label: '(St. Pierre, 2021a, 2021b)' }, { t: 'text', v: '.' }],
+    ] },
   { id: 4, title: 'Escribir entre dos', short: 'Coproducción narrativa',
-    description: 'Los cuentos surgieron del vínculo entre una directora participante y un investigador. La escritura conjunta reúne experiencias, recuerdos y decisiones narrativas sin borrar las diferencias entre sus posiciones.',
-    concepts: ['Perspectivas parciales', 'Conocimientos situados', 'Acuerdos y divergencias', 'Hacer-con'],
-    ground: [
-      { concept: 'Conocimientos situados y perspectivas parciales', ref: 'haraway1995' },
-      { concept: 'Simpoiesis y hacer-con', ref: 'haraway2019' },
-    ],
-    notes: 'La directora discute situaciones, incorpora memorias y modifica interpretaciones. Es una relación entre pares alrededor de una pregunta común, aunque las posiciones respecto de investigación, autoría y circulación siguen siendo distintas. La escritura conserva acuerdos, divergencias y tensiones. Las posiciones se encuentran sin confundirse.' },
+    pages: [
+      [{ t: 'text', v: 'La escritura compartida se fue gestando en un ' }, { t: 'em', v: 'vínculo construido durante una investigación doctoral' }, { t: 'text', v: ' y sostenido en las relaciones entre ' }, { t: 'em', v: 'escuelas secundarias y universidad' }, { t: 'text', v: ', particularmente a través de ' }, { t: 'em', v: 'ITED-UNSAM' }, { t: 'text', v: '.' }],
+      [{ t: 'text', v: 'Desde sus diferentes experiencias y posiciones, una ' }, { t: 'em', v: 'directora escolar' }, { t: 'text', v: ' y un ' }, { t: 'em', v: 'investigador' }, { t: 'text', v: ' comenzaron a componer cuentos en los que convergen recuerdos, conversaciones, interpretaciones y decisiones narrativas.' }],
+      [{ t: 'text', v: 'Esta experiencia de ' }, { t: 'em', v: 'hacer-con' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['haraway2019'] }, { t: 'text', v: ' reúne ' }, { t: 'em', v: 'conocimientos situados y perspectivas parciales' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['haraway1995'] }, { t: 'text', v: ', atravesados por acuerdos, diferencias y una historia compartida.' }],
+    ] },
   { id: 5, title: '¿Por qué cuentos?', short: 'Forma breve',
-    description: 'El cuento concentra experiencias, sostiene tensiones, cifra segundas historias en la elipsis y permite trabajar con tiempos que se bifurcan.',
-    concepts: ['JULIO CORTÁZAR', 'RICARDO PIGLIA', 'JORGE LUIS BORGES'],
-    ground: [],
-    notes: 'La ponencia recupera la concentración y la intensidad del cuento (Cortázar, 1971), la segunda historia que se cifra en los intersticios (Piglia, 2000) y la coexistencia de temporalidades en la imagen de los senderos que se bifurcan (Borges, 1974). La participación del lector aparece más adelante (Iser, 1987; Stockwell, 2002; Eco, 1990). La forma breve responde a un problema metodológico, no es un adorno.' },
-  { id: 6, title: 'Una narrativa coral y multiespecies', short: 'Voces y presencias',
-    description: 'Neurona, hongo, puerta, monstruo, mate y pájaros narran perspectivas que desplazan el centro humano. La dirección se hace con organismos, objetos, tecnologías y otras presencias.',
-    concepts: ['NARRATIVA CORAL', 'MULTIPLICIDADES', 'PRESENCIAS MÁS-QUE-HUMANAS'],
-    ground: [
-      { concept: 'Fabulación especulativa y hacer-con', ref: 'haraway2019' },
-      { concept: 'Asociaciones y mediaciones', ref: 'latour2008' },
-      { concept: 'Perspectiva sociotécnica', ref: 'landri2021' },
-      { concept: 'Multiplicidades', ref: 'deleuze1988' },
+    pages: [
+      [{ t: 'text', v: 'El cuento ofrece recursos precisos para trabajar los interrogantes del multiverso: la ' }, { t: 'em', v: 'concentración' }, { t: 'text', v: ' capaz de irradiar significados más allá de los límites del texto ' }, { t: 'cite', refs: ['cortazar1971'] }, { t: 'text', v: ', la ' }, { t: 'em', v: 'elipsis' }, { t: 'text', v: ' que cifra una segunda historia en los intersticios ' }, { t: 'cite', refs: ['piglia2000'] }, { t: 'text', v: ' y la coexistencia de tiempos que se ' }, { t: 'em', v: 'bifurcan' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['borges1974'] }, { t: 'text', v: '.' }],
+      [{ t: 'text', v: 'Una misma escena puede así contar más de una historia y conservar la irresolución de lo que ocurre en la dirección escolar.' }],
+    ] },
+  { id: 6, title: 'Una narrativa coral y multiespecies', short: 'Perspectivas y presencias',
+    pages: [
+      [{ t: 'text', v: 'Escribir cuentos permite ensayar un descentramiento de la mirada humana: neuronas, un hongo, una puerta, un monstruo, un mate y pájaros narran ' }, { t: 'em', v: 'perspectivas' }, { t: 'text', v: ' que desplazan al sujeto director.' }],
+      [{ t: 'text', v: 'La dirección se produce en ' }, { t: 'em', v: 'asociaciones heterogéneas' }, { t: 'text', v: ' de personas, objetos, tecnologías y regulaciones ' }, { t: 'cite', refs: ['latour2008'] }, { t: 'text', v: ', una configuración ' }, { t: 'em', v: 'sociotécnica' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['landri2021'] }, { t: 'text', v: '. La ' }, { t: 'em', v: 'fabulación especulativa' }, { t: 'text', v: ' y el hacer-con ' }, { t: 'cite', refs: ['haraway2019'] }, { t: 'text', v: ', y la noción de ' }, { t: 'em', v: 'multiplicidades' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['deleuze1988'] }, { t: 'text', v: ', acompañan esa composición.' }],
+    ] },
+  { id: 7, title: 'Seis cuentos, seis universos', short: 'Los seis relatos',
+    pages: [
+      [{ t: 'text', v: 'Seis cuentos concretan la experimentación. Cada uno explora una tensión de la dirección escolar desde una perspectiva y una temporalidad distintas: la ' }, { t: 'em', v: 'performatividad' }, { t: 'text', v: ' y sus exigencias contradictorias ' }, { t: 'cite', refs: ['ball2003'] }, { t: 'text', v: ', las ' }, { t: 'em', v: 'múltiples capas' }, { t: 'text', v: ' del trabajo directivo ' }, { t: 'cite', refs: ['mifsud2021'] }, { t: 'text', v: ' o las ' }, { t: 'em', v: 'mediaciones sociomateriales' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['latour2008'] }, { t: 'text', v: '.' }],
+      [{ t: 'text', v: 'Seleccioná un cuento para ver su atmósfera y el problema que permite interrogar.' }],
     ],
-    notes: 'La nota de autoría cuenta que los relatos hicieron hablar a neuronas, un hongo, una puerta, un monstruo, un mate y pájaros para ensayar un descentramiento de la mirada humana. Conviene distinguir las presencias vivas (neuronas, hongo, pájaros) de los objetos (puerta, mate) y de otras presencias (monstruo, tecnologías, afectos). Las prácticas directivas se producen en asociaciones heterogéneas; la figura de quien dirige permanece relevante, pero no explica por sí sola la escena.' },
-  { id: 7, title: 'Seis cuentos, seis universos', short: 'Mundos narrativos',
-    description: 'Seis relatos exploran tensiones de las prácticas de dirección escolar desde perspectivas y temporalidades diferentes.',
-    concepts: [],
-    ground: [
-      { concept: 'Performatividad', ref: 'ball2003' },
-      { concept: 'Lectura de múltiples capas', ref: 'mifsud2021' },
-      { concept: 'Mediaciones sociomateriales', ref: 'latour2008' },
-    ],
-    storyPortal: true,
-    notes: 'Los seis cuentos del libro constituyen composiciones narrativas. Cada ficha indica qué tensión de la dirección escolar permite interrogar, sin revelar desenlaces. No se asigna un autor a cada cuento: las referencias orientan problemas, no clasifican relatos. Las ilustraciones de esta escena fueron compuestas para esta presentación; la tapa del libro ocupa el centro.' },
+    storyPortal: true },
   { id: 8, title: 'Escribir también es investigar', short: 'Indagación postcualitativa',
-    description: 'Al componer cuentos se transforman las relaciones entre materiales y experiencias, aparecen preguntas y se producen nuevas interpretaciones: la escritura participa de la producción de conocimiento.',
-    concepts: ['ESCRIBIR ES PENSAR', 'ESCRIBIR ES ANALIZAR'],
-    ground: [
-      { concept: 'Escritura como método de indagación, p. 967', ref: 'richardson2005' },
-      { concept: 'Experimentación postcualitativa', ref: 'stpierre2021a' },
-      { concept: 'Lenguaje y materialidad', ref: 'maclure2013' },
-    ],
-    notes: '“Writing is thinking, writing is analysis” (Richardson & St. Pierre, 2005, p. 967): la cita está documentada en la ponencia. La investigación doctoral conserva su inscripción etnográfica; la coproducción de cuentos introduce una experimentación postcualitativa que transforma el vínculo entre registros, experiencias, conceptos y escritura. Las categorías no se descartan. La escritura no es una actividad posterior al análisis: decidir qué narrar, qué cifrar mediante la elipsis y qué temporalidades superponer es en sí mismo una operación analítica.' },
-  { id: 9, title: 'Universos resonantes', short: 'Lecturas que expanden',
-    description: 'La lectura recrea sentidos desde posiciones, experiencias y biografías sociales diferentes. Los relatos abren interpretaciones y discusión colectiva dentro de los límites que organiza cada texto.',
-    concepts: ['LECTURA', 'MUNDOS TEXTUALES', 'INTERPRETACIONES', 'RESONANCIAS'],
-    ground: [
-      { concept: 'Interacción entre texto y lector', ref: 'iser1987' },
-      { concept: 'Mundos textuales', ref: 'stockwell2002' },
-      { concept: 'Apertura y organización textual', ref: 'eco1990' },
-    ],
-    notes: 'La lectura produce mundos textuales en el encuentro entre relato y lector. Los vacíos convocan interpretación, dentro de los límites que organiza cada texto: la apertura no equivale a ausencia de límites. Una misma escena puede abrir preguntas distintas según la experiencia y la posición de quien lee. Cerrar retomando que la narración deja hilos disponibles para nuevas lecturas colectivas.' },
+    pages: [
+      [{ t: 'text', v: 'Escribir un cuento modifica las relaciones entre los materiales, altera la importancia de ciertos elementos y produce preguntas que antes no tenían formulación. Por eso la escritura es un ' }, { t: 'em', v: 'método de indagación' }, { t: 'text', v: ': «writing is thinking, writing is analysis» ' }, { t: 'cite', refs: ['richardson2005'], label: '(Richardson & St. Pierre, 2005, p. 967)' }, { t: 'text', v: '.' }],
+      [{ t: 'text', v: 'Es una ' }, { t: 'em', v: 'experimentación postcualitativa' }, { t: 'text', v: ' surgida de un problema concreto ' }, { t: 'cite', refs: ['stpierre2021a'] }, { t: 'text', v: ', atenta a la materialidad del lenguaje ' }, { t: 'cite', refs: ['maclure2013'] }, { t: 'text', v: '. Decidir qué narrar, qué cifrar con la elipsis y qué temporalidades superponer ya es ' }, { t: 'em', v: 'analizar' }, { t: 'text', v: '.' }],
+    ] },
+  { id: 9, title: 'Universos resonantes', short: 'Lectura y resonancias',
+    pages: [
+      [{ t: 'text', v: 'El sentido se produce en la interacción entre texto y lector, allí donde los vacíos convocan una ' }, { t: 'em', v: 'intervención activa' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['iser1987'] }, { t: 'text', v: '. La poética cognitiva permite seguir cómo la lectura construye ' }, { t: 'em', v: 'mundos textuales' }, { t: 'text', v: ' ' }, { t: 'cite', refs: ['stockwell2002'] }, { t: 'text', v: '.' }],
+      [{ t: 'text', v: 'Esa apertura ocurre dentro de una organización textual que orienta las inferencias posibles ' }, { t: 'cite', refs: ['eco1990'] }, { t: 'text', v: '. Los cuentos abren así una discusión colectiva desde posiciones, experiencias y biografías sociales diferentes.' }],
+    ] },
 ];
 
 /* Descripciones verificadas contra el texto de cada cuento (PDF del libro). */
 export const stories: Story[] = [
   { title: 'Ludismo neuronal',
     description: 'Una neurona recuerda la magia de conectarse entre muchas. Agotadas por urgencias, resoluciones y llamados fuera de horario, las neuronas inician un plan de lucha.',
+    mood: 'Humor, cansancio y nostalgia: una huelga de neuronas contada con ironía.',
     problem: 'Urgencia, regulación y disponibilidad permanente: qué hace la sobrecarga normativa con el tiempo y el cuerpo de quien dirige.', ref: 'ball2003',
     image: './assets/stories/ilustraciones/ludismo-neuronal.svg', imageAlt: 'Ilustración del cuento Ludismo neuronal: una neurona luminosa con engranajes y un martillo' },
   { title: 'Diario de un hongo en la pared',
     description: 'Un hongo fosforescente habita la esquina de una oficina, observa a las personas que la usan y la irrupción nocturna de invasores, y se pregunta si es problema, proyecto, trabajo o veneno.',
+    mood: 'Íntima e inquietante: la mirada de quien observa desde un rincón húmedo.',
     problem: 'Lo que la materialidad del espacio —humedad, grietas, paredes— muestra y mediatiza del trabajo directivo.', ref: 'latour2008',
     image: './assets/stories/ilustraciones/diario-de-un-hongo.svg', imageAlt: 'Ilustración del cuento Diario de un hongo en la pared' },
   { title: 'Puerta',
     description: 'La puerta de la dirección, interrogada por quienes pasan, permanece impasible mientras detrás de ella se tejen hipótesis y ficciones sobre lo que ocurre.',
+    mood: 'Reflexiva y casi ensayística: una puerta que solo permanece y es interrogada.',
     problem: 'Umbral, permeabilidad y suposiciones: cómo una puerta organiza accesos, demandas y miradas sobre la dirección.', ref: 'latour2008',
     image: './assets/stories/ilustraciones/puerta.svg', imageAlt: 'Ilustración del cuento Puerta: una puerta de dirección con luz bajo el marco' },
   { title: 'Esto que existe',
     description: 'Iván tiene quince años y cursa el secundario vespertino. Un monstruo lo acecha; en la dirección lo acompañan la directora, un profesor y la preceptora.',
+    mood: 'Tensa y angustiante: el barrio, el miedo y un monstruo que acecha.',
     problem: 'Cuidado y acompañamiento: qué hace la dirección cuando irrumpe en la oficina un sufrimiento que excede lo administrativo.',
     image: './assets/stories/ilustraciones/esto-que-existe.svg', imageAlt: 'Ilustración del cuento Esto que existe: un monstruo detrás de un pupitre' },
   { title: 'Mate lavado',
     description: 'Una directora ya jubilada siente en el cuerpo algo que no logra nombrar, hasta que reconoce el modo de estar todo el tiempo alerta que aprendió en la escuela.',
+    mood: 'Cotidiana y corporal: memoria y alerta que se reconocen en el cuerpo.',
     problem: 'Capas sedimentadas de performatividad: la alerta constante que permanece en el cuerpo aun fuera del cargo.', ref: 'ball2003',
     image: './assets/stories/ilustraciones/mate-lavado.svg', imageAlt: 'Ilustración del cuento Mate lavado: mate, termo, llaves y reloj' },
   { title: 'La mujer de las granadas',
     description: 'Un pájaro que vuelve cada temporada observa desde un cable a una mujer de pelo rojo a quien los chicos llaman Profe, y a quienes regresan siendo adultos.',
+    mood: 'Observadora y tierna: el tiempo visto desde un cable, de temporada en temporada.',
     problem: 'Permanencia y paso del tiempo: lo que persiste de una directora en los vínculos que atraviesan las temporadas.',
     image: './assets/stories/ilustraciones/la-mujer-de-las-granadas.svg', imageAlt: 'Ilustración del cuento La mujer de las granadas: granadas y un gorrión' },
 ];
-
-export const motionSettings = { reducedMotion: false, starCount: 42 };

@@ -5,5 +5,6 @@ import './styles.css';
 import './redesign.css';
 import './scenes.css';
 import './scenes2.css';
+import './final.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);

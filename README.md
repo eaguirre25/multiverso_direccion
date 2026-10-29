@@ -51,3 +51,10 @@ Archivos nuevos: `src/components/Cutout.tsx` (títulos de recortes en SVG con pa
 ## Rediseño artístico · Fase 2 (escenas interiores)
 
 `src/components/Scenes.tsx` + `src/scenes.css`: una composición propia por portal (hilos de relaciones, escenas simultáneas, códigos ⇄ cuento interactivo, intersección de dos voces, camino que se bifurca, constelación coral con hover, planetas de los seis cuentos, manuscrito con la cita documentada, ondas de lectura). `?portal=N` abre un portal directo. Nota: los PNG de `public/assets/stories/` son íconos casi transparentes (alfa ≈ 9 %); se realzan con el filtro SVG `#story-ink`. Conviene reemplazarlos por las láminas originales del libro con los mismos nombres.
+
+## Versión 3 (portada, citas integradas, navegación dimensional y cierre)
+
+- Los universos tienen un texto integrado con nociones destacadas y citas APA autor-año (`src/data/presentation.ts`, segmentos `text`/`em`/`cite`; `PortalCopy` en `src/components/AcademicReference.tsx`). Cada cita abre su ficha bibliográfica completa; los textos largos se dividen en capas.
+- Todo cambio de universo pasa por el mapa y atraviesa un portal (`navigateToPortal` en `src/App.tsx`). Desde el universo 9 se llega a la pantalla final (`src/components/ThankYou.tsx`), que no es un décimo portal.
+- Se eliminaron el modo presentador, las notas y el interruptor de movimiento. Solo queda «Pantalla completa» (también `F`). Se respeta `prefers-reduced-motion`.
+- El QR de cierre está en `public/assets/qr/qr-cierre.png` (recorte del archivo `Diseño sin título.png`, sin modificar su matriz).

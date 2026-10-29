@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-/** El interruptor «Movimiento reducido» de la interfaz se comparte por contexto. */
+/** Preferencia de movimiento reducido compartida por contexto (sin interruptor público). */
 export const MotionCtx = createContext(false);
 
 /* Sistema reutilizable de conexiones dinámicas (SVG + SMIL).
@@ -21,6 +21,7 @@ export type FlowPath = {
   shape?: 'dot' | 'paper';
   hue?: number;
   dash?: boolean;
+  blink?: boolean;           // aparece y desaparece (elipsis)
   width?: number;
   delay?: number;            // aparición progresiva (segundos)
 };
@@ -51,7 +52,7 @@ export function Flow({ paths, active, reduced }: { paths: FlowPath[]; active?: s
       const hot = !!active && !!p.tags?.includes(active); const dim = !!active && !hot;
       const n = p.n ?? 3; const dur = p.dur ?? 7; const dir = p.dir ?? 1;
       const style = { ['--h' as string]: p.hue ?? 190, ['--w' as string]: p.width ?? 1, animationDelay: `${p.delay ?? 0}s` } as React.CSSProperties;
-      return <g key={p.id} className={`flow${hot ? ' flow-on' : ''}${dim ? ' flow-dim' : ''}${p.dash ? ' flow-dash' : ''}`} style={style}>
+      return <g key={p.id} className={`flow${hot ? ' flow-on' : ''}${dim ? ' flow-dim' : ''}${p.dash ? ' flow-dash' : ''}${p.blink ? ' flow-blink' : ''}`} style={style}>
         <path className="flow-glow" d={p.d}>{p.d2 && !still && <animate attributeName="d" dur={`${dur * 2.2}s`} repeatCount="indefinite" values={`${p.d};${p.d2};${p.d}`} />}</path>
         <path className="flow-line" d={p.d}>{p.d2 && !still && <animate attributeName="d" dur={`${dur * 2.2}s`} repeatCount="indefinite" values={`${p.d};${p.d2};${p.d}`} />}</path>
         {!still && Array.from({ length: n }, (_, i) => {

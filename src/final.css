@@ -1,0 +1,83 @@
+/* ==================================================================
+   Versión 3 · portada, texto integrado con citas, navegación,
+   universos 4–6, títulos de portales y pantalla final.
+   ================================================================== */
+
+/* ---------- Portada ---------- */
+.cover{padding:2.5vh 4vw}
+.cover-content{width:min(86vw,1400px)}
+.cover-title{width:min(60vw,1000px,98vh)}
+.cover .subtitle{font-size:clamp(18px,1.6vw,30px);margin:clamp(8px,1.6vh,22px) auto 8px}
+.cover .byline{display:flex;gap:clamp(18px,3vw,56px);flex-wrap:wrap;justify-content:center;font:700 clamp(24px,1.95vw,40px)/1.15 Georgia,"Times New Roman",serif!important;letter-spacing:.02em;color:#fff3da;text-shadow:0 3px 14px #000,0 0 4px #000a}
+.cover .byline span+span:before{content:"·";margin-right:clamp(18px,3vw,56px);color:var(--amber)}
+.congress{margin-top:clamp(8px,1.5vh,20px);display:grid;gap:.2em;justify-items:center;text-align:center;color:#eadff0;text-shadow:0 2px 12px #000}
+.congress p{margin:0}
+.cg-main{font:700 clamp(21px,1.6vw,34px)/1.2 Georgia,serif;color:#f5d890}
+.cg-uni{font:600 clamp(18px,1.3vw,28px)/1.2 Georgia,serif}
+.cg-table{font:clamp(18px,1.3vw,28px)/1.25 Georgia,serif;max-width:1300px}
+.cg-table b{color:var(--amber)}
+.cg-date{font:600 clamp(16px,1.15vw,26px) "Courier New",monospace;letter-spacing:.14em;color:#cdbfe0;margin-top:.25em!important}
+.cover .enter-button{margin-top:clamp(10px,2vh,28px)}
+
+/* ---------- Texto integrado: nociones y citas APA ---------- */
+.portal-copy{padding:clamp(18px,2vw,36px)}
+.portal-description{margin:0}
+.kw{font-style:normal;font-weight:700;color:hsl(var(--h) 92% 78%);text-shadow:0 0 18px hsl(var(--h) 90% 55%/.35)}
+.cite{all:unset;box-sizing:border-box;cursor:pointer;color:#ffd98a;font:700 .72em "Courier New",monospace;white-space:nowrap;border-bottom:2px dotted #ffd98aaa;padding:0 .14em;margin:0 .05em;transition:background .2s}
+.cite:hover,.cite-open{background:#ffd98a2a}
+.cite:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.cite-full{margin:.7em 0 0;padding:.6em .85em;border-left:4px solid #ffd98a;background:#ffffff12;font:clamp(17px,1.25vw,23px)/1.45 Georgia,serif;color:#ebe3d2;animation:scene-enter .25s both}
+.cite-full p{margin:.3em 0}
+.pager{display:flex;align-items:center;gap:10px;margin-top:clamp(12px,1.6vw,24px)}
+.pager button{all:unset;box-sizing:border-box;cursor:pointer;color:#f3ead4;font:700 clamp(24px,1.9vw,36px)/1 Georgia,serif;padding:.05em .45em .12em;border:1px solid #ffffff55;transition:background .2s}
+.pager button:hover:not(:disabled){background:#ffffff22}
+.pager button:disabled{opacity:.28;cursor:default}
+.pager button:focus-visible{outline:3px solid #fff}
+.pager .dot{width:15px;height:15px;padding:0;border-radius:50%;border:2px solid #ffd98a}
+.pager .dot-on{background:#ffd98a}
+
+/* ---------- Escena 4 / 5 / 6 ---------- */
+.core-card{width:30%;top:40%}
+.core-gloss{margin:0;font:clamp(18px,1.35vw,26px)/1.3 Georgia,serif;color:#e8dfee}
+.core-author{margin:0;font:700 clamp(20px,1.5vw,28px) Georgia,serif;color:#ffd98a}
+.art-center-s5{font-size:clamp(22px,2.4vw,46px)}
+.flow-blink{animation:flow-in 1.2s ease forwards,blink 7s ease-in-out 1.2s infinite}
+@keyframes blink{0%,100%{opacity:0}35%,65%{opacity:1}}
+.s6-school{position:absolute;translate:-50% -50%;width:25%;height:auto;z-index:2;filter:drop-shadow(0 14px 18px #000b);animation:school-bob 10s ease-in-out infinite;pointer-events:none}
+.glyph{position:absolute;translate:-50% -50%;width:clamp(58px,5.8vw,112px);height:auto;aspect-ratio:1;padding:clamp(9px,1vw,18px);box-sizing:border-box;border-radius:50%;background:#efe6cf;fill:#1b1720;stroke:#1b1720;stroke-width:3;stroke-linejoin:round;border:4px solid;z-index:3;box-shadow:0 0 26px #0009}
+.glyph .gl-line{fill:none;stroke-width:6;stroke-linecap:round}
+.glyph .gl-vein{fill:none;stroke:#efe6cf;stroke-width:4}
+.glyph .gl-door{fill:#efe6cf}
+.glyph-vivo{border-color:#6ee6b0}.glyph-objeto{border-color:#e8b45a;border-style:dashed}.glyph-otro{border-color:#f07cc0;border-style:dotted}
+.legend-s6{left:0;top:93%;translate:none;gap:.9em}
+.sd-mood{font:italic clamp(18px,1.4vw,27px)/1.35 Georgia,serif;margin:0 0 .6em;color:#cfe6e0}
+.sd-mood b{display:block;font:700 .7em "Courier New",monospace;font-style:normal;letter-spacing:.18em;text-transform:uppercase;color:#7fe0cf;margin-bottom:.25em}
+
+/* ---------- Títulos del mapa: visibles y ampliados al explorar ---------- */
+.gate-label{opacity:.9!important;transform:none!important;top:94%;font-size:clamp(14px,1.1vw,21px)!important;transform-origin:50% 0;transition:scale .35s cubic-bezier(.2,.8,.2,1),opacity .3s,filter .3s;z-index:10}
+.gate-label-up{top:auto;bottom:90%;transform-origin:50% 100%}
+.gate-label-l{left:0;translate:0 0;transform-origin:0 0}
+.gate-label-r{left:auto;right:0;translate:0 0;transform-origin:100% 0}
+.gate:hover .gate-label,.gate-hot .gate-label,.gate:focus-visible .gate-label{scale:1.7;opacity:1!important;filter:brightness(1.25) drop-shadow(0 0 14px hsl(var(--h) 90% 62%/.8))}
+.gate-off .gate-label{opacity:.2!important;filter:blur(.5px) brightness(.8)}
+.gate-approach .gate-label{opacity:0!important}
+
+/* ---------- Pantalla final ---------- */
+.thanks{position:absolute;inset:0;overflow:hidden;z-index:2}
+.thanks-stage{position:absolute;inset:0}
+.thanks-pic{position:absolute;left:0;top:0;width:min(15vh,11vw);height:auto;aspect-ratio:1;object-fit:cover;border-radius:50%;border:3px solid #f1e9d2;background:#0a0b18;box-shadow:0 8px 28px #000c,0 0 34px hsl(40 85% 60%/.25);will-change:transform;z-index:3}
+.thanks-text{position:absolute;left:44%;top:47%;translate:-50% -50%;width:min(50vw,980px);display:grid;gap:clamp(14px,3vh,34px);justify-items:center;z-index:4}
+.thanks-title{margin:0;width:min(40vw,780px)}
+.thanks-names{margin:0;width:min(48vw,940px)}
+.thanks .cutout-main{width:100%;height:auto}
+.thanks-qr{position:absolute;right:3vw;bottom:11vh;width:min(24vh,17vw);aspect-ratio:1;padding:12px;background:#fff;border-radius:6px;box-shadow:0 10px 40px #000c;z-index:5}
+.thanks-qr img{display:block;width:100%;height:100%;object-fit:contain}
+.thanks-nav{position:absolute;left:3.4vw;bottom:2.4vh;display:flex;gap:12px;z-index:6}
+.thanks-nav button{cursor:pointer;border:1px solid #c2a66f70;background:#17172ac9;color:#f1dfbd;padding:.7em 1.1em;font:600 clamp(14px,1.25vw,24px) "Courier New",monospace;transition:background .2s,transform .2s}
+.thanks-nav button:hover{background:#332a42;transform:translateY(-2px)}
+.thanks.entering{animation:universe-in 1.5s cubic-bezier(.2,.7,.2,1) both}
+.thanks.leaving{animation:universe-out .65s cubic-bezier(.5,0,.8,.4) forwards!important}
+.utility-controls{right:15px;bottom:14px}
+
+.core-name{font-size:clamp(22px,1.7vw,33px)!important}
+.core-card{padding:.5em .7em .55em}

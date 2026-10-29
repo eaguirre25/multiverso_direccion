@@ -23,7 +23,7 @@ const send = (method, params = {}) => new Promise(r => { const i = ++id; pending
 
 const only = process.argv[4];
 const shots = only === 'portales' ? Array.from({ length: 9 }, (_, i) => [`portal${i + 1}`, `portal=${i + 1}`, Number(process.env.W ?? 1920), Number(process.env.H ?? 1080)]) : [
-  ['portada', 'cover', 1920, 1080], ['mapa', 'map', 1920, 1080],
+  ['portada', 'cover', 1920, 1080], ['mapa', 'map', 1920, 1080], ['cierre', 'thanks', 1920, 1080], ['cierre', 'thanks', 1366, 768],
   ['portada', 'cover', 1366, 768], ['mapa', 'map', 1366, 768],
 ];
 for (const [name, scene, w, h] of shots) {
