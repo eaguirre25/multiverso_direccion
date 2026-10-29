@@ -1,0 +1,98 @@
+/* ==================================================================
+   FASE 2 · Escenas interiores
+   ================================================================== */
+.portal-scene{position:absolute;inset:0;min-height:0;padding:0;overflow:hidden;--h:270}
+.portal-scene:before{display:none}
+.portal-scene .scene-header{position:absolute;left:3.4vw;right:3.4vw;top:3.2vh;z-index:9;align-items:flex-start}
+.portal-scene .eyebrow{font:600 clamp(10px,.8vw,14px) "Courier New",monospace;letter-spacing:.3em;color:#e8c987;margin:0 0 8px;text-shadow:0 2px 8px #000}
+.portal-heading{font-size:clamp(24px,3vw,50px);max-width:66vw}
+.portal-scene:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 30% 55%,hsl(var(--h) 70% 45%/.22),transparent 55%),radial-gradient(ellipse at 90% 10%,hsl(var(--h) 80% 55%/.18),transparent 40%)}
+.portal-body{position:absolute;left:3.4vw;right:3.4vw;top:20%;bottom:11%;display:grid;grid-template-columns:1.75fr 1fr;gap:3vw;align-items:center;justify-content:normal;z-index:2}
+.portal-body:after{display:none}
+.scene-art{position:relative;width:100%;height:100%;filter:drop-shadow(0 6px 6px rgba(0,0,0,.55))}
+.art-glow{position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,hsl(var(--h) 80% 55%/.2),transparent 66%);filter:blur(16px);animation:glow 9s ease-in-out infinite alternate}
+.art-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.thread,.ring-line{fill:none;stroke:hsl(var(--h) 85% 74%/.7);stroke-width:1.6;vector-effect:non-scaling-stroke;stroke-dasharray:3 6;transition:stroke .3s,opacity .3s;animation:fil-run2 14s linear infinite}
+.thread.hot{stroke:#fff3cf;stroke-width:2.8}
+.ring-line{stroke-dasharray:2 7;animation-duration:30s;opacity:.6}
+.path-main{fill:none;vector-effect:non-scaling-stroke;stroke-width:3;stroke:hsl(var(--h) 90% 76%);stroke-linecap:round;stroke-dasharray:400;stroke-dashoffset:400;animation:draw 1.6s ease forwards;filter:drop-shadow(0 0 6px hsl(var(--h) 90% 60%))}
+.node{fill:#fff3cf;filter:drop-shadow(0 0 8px #ffd78a)}
+@keyframes fil-run2{to{stroke-dashoffset:-90}}
+@keyframes draw{to{stroke-dashoffset:0}}
+.art-center,.art-title{position:absolute;translate:-50% -50%;z-index:3;font-size:clamp(26px,3.4vw,58px)}
+.art-title{font-size:clamp(26px,3vw,52px)}
+.art-gate{position:absolute;translate:-50% -50%;width:34%;aspect-ratio:1;opacity:.9}
+.art-gate .gate-art{width:100%;height:100%}
+.coral-pair{display:flex;flex-direction:column;align-items:center;gap:.1em;font-size:.82em}
+.cameo{position:absolute;width:clamp(48px,5.4vw,96px);aspect-ratio:1;object-fit:cover;border-radius:46% 54% 50% 48%;border:2px solid hsl(var(--h) 80% 72%);translate:-50% -50%;box-shadow:0 0 22px hsl(var(--h) 85% 60%/.5);pointer-events:none}
+.art-toggle{position:absolute;left:50%;bottom:-2%;translate:-50% 0;border:0;cursor:pointer;background:var(--paper);color:var(--ink);font:700 clamp(12px,1vw,17px) "Courier New",monospace;letter-spacing:.1em;padding:12px 22px;clip-path:polygon(1% 4%,99% 0,100% 94%,2% 100%);z-index:5;transition:transform .2s}
+.art-toggle:hover{transform:translateY(-3px) rotate(-1deg)}
+
+/* recortes de texto */
+.scrap{position:absolute;translate:-50% -50%;rotate:var(--r,0deg);z-index:3;white-space:nowrap;font-size:calc(var(--s,1)*clamp(15px,1.75vw,34px));line-height:1.12;padding:.2em .55em .24em;color:var(--ink);background-color:var(--bg,#eadfc2);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/><feColorMatrix values='0 0 0 0 .3 0 0 0 0 .22 0 0 0 0 .12 0 0 0 .5 -.12'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");clip-path:polygon(1% 6%,34% 0,67% 3%,99% 0,100% 48%,98% 96%,64% 100%,30% 97%,0 100%,2% 52%);animation:scrap-in .7s cubic-bezier(.2,.8,.25,1.12) both;animation-delay:var(--d,0ms);transition:scale .25s,translate .25s,filter .25s;cursor:default}
+.scrap:nth-child(3n){clip-path:polygon(0 3%,40% 0,100% 5%,98% 52%,100% 98%,55% 100%,3% 96%,1% 45%)}
+.scrap:nth-child(4n){clip-path:polygon(2% 0,60% 4%,100% 0,99% 100%,45% 96%,0 100%)}
+.scrap:hover,.scrap-on{scale:1.1;translate:-50% calc(-50% - 5px);z-index:8;filter:brightness(1.12)}
+.scrap-move{transition:left .95s cubic-bezier(.6,0,.2,1),top .95s cubic-bezier(.6,0,.2,1),rotate .95s,background-color .6s,scale .25s}
+@keyframes scrap-in{from{opacity:0;transform:translateY(-26px) rotate(8deg) scale(.7)}to{opacity:1;transform:none}}
+.p-cream{--bg:#eadfc2;--ink:#16131a}.p-white{--bg:#f4efe4;--ink:#16131a}.p-aged{--bg:#d8c283;--ink:#2a1b10}.p-news{--bg:#cdc4ad;--ink:#16131a}.p-black{--bg:#101016;--ink:#f2e7c9}.p-red{--bg:#a92f2c;--ink:#f6e9d0}.p-teal{--bg:#1c6a70;--ink:#f3ead2}.p-ochre{--bg:#d29b36;--ink:#1a1210}.p-magenta{--bg:#b2306d;--ink:#f8ecd6}.p-violet{--bg:#3f3280;--ink:#f1e7cf}
+.f-news{font-family:"Times New Roman",serif;font-weight:700}.f-didone{font-family:"Bodoni MT Black","Bodoni MT",Didot,"Times New Roman",serif;font-weight:800}.f-slab{font-family:"Rockwell Extra Bold",Rockwell,"Bookman Old Style",Georgia,serif;font-weight:800}.f-cond{font-family:Impact,"Arial Narrow",sans-serif;font-weight:400;letter-spacing:.02em}.f-grot{font-family:"Arial Black","Franklin Gothic Heavy",Arial,sans-serif;font-weight:900}.f-type{font-family:"Courier New",monospace;font-weight:700}.f-ital{font-family:Georgia,serif;font-style:italic;font-weight:700}
+
+/* escenas específicas */
+.venn{position:absolute;top:50%;width:52%;aspect-ratio:1;border-radius:50%;translate:0 -50%;animation:venn-in 1.2s ease both}
+.venn-a{left:2%;background:radial-gradient(circle,#e8b45a44,#e8b45a14 60%,transparent 72%);border:2px solid #e8b45aaa}
+.venn-b{right:2%;background:radial-gradient(circle,#3fc9d044,#3fc9d014 60%,transparent 72%);border:2px solid #3fc9d0aa;animation-delay:.25s}
+@keyframes venn-in{from{opacity:0;scale:.6}to{opacity:1}}
+.manuscript{position:absolute;left:50%;top:44%;translate:-50% -50%;width:74%;height:68%;rotate:-1.5deg;background:#f1e9d2;color:#18141a;padding:7% 8%;clip-path:polygon(0 1%,18% 0,52% 2%,86% 0,100% 1%,99% 40%,100% 98%,70% 100%,34% 99%,1% 100%,2% 52%);animation:scrap-in .8s both}
+.ms-lines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 33px,#4a63a033 34px);opacity:.7}
+.ms-quote{position:relative;margin:0;font:italic 700 clamp(22px,2.9vw,52px)/1.2 Georgia,serif}
+.ms-cite{position:relative;margin:.8em 0 0;font:600 clamp(11px,.95vw,17px) "Courier New",monospace;letter-spacing:.1em;color:#5a4a3a}
+.ms-scribble{position:absolute;left:8%;bottom:8%;width:84%;overflow:visible}
+.ms-scribble path{fill:none;stroke:#1d3b8c;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:400;stroke-dashoffset:400;animation:draw 3s .8s ease forwards}
+.ripples{position:absolute;left:50%;top:50%;width:90%;aspect-ratio:1.5;translate:-50% -50%}
+.ripples i{position:absolute;inset:0;border-radius:50%;border:2px solid hsl(var(--h) 85% 72%/.6);animation:ripple 7s ease-out infinite}
+.ripples i:nth-child(2){animation-delay:1.75s}.ripples i:nth-child(3){animation-delay:3.5s}.ripples i:nth-child(4){animation-delay:5.25s}
+@keyframes ripple{from{scale:.1;opacity:.9}to{scale:1;opacity:0}}
+
+/* copia académica: sobria y legible */
+.portal-copy{max-width:none;padding:clamp(18px,2vw,34px);background:linear-gradient(135deg,#0b0c1ce6,#0b0c1cc4);border-left:3px solid hsl(var(--h) 80% 68%);box-shadow:0 18px 50px #000a;position:relative}
+.portal-copy:before{content:"";position:absolute;left:-10px;top:-12px;width:78px;height:24px;background:#e8d9a8cc;rotate:-8deg;clip-path:polygon(0 10%,100% 0,98% 100%,3% 90%)}
+.portal-kicker{font:600 clamp(11px,.95vw,16px) "Courier New",monospace;letter-spacing:.22em;color:hsl(var(--h) 85% 76%);margin:0 0 .9em}
+.portal-description{font:clamp(20px,1.95vw,34px)/1.38 Georgia,"Times New Roman",serif;color:#f5eedd;margin:0;text-wrap:pretty}
+.editable-book{margin-top:clamp(16px,2vw,30px);font:clamp(12px,1vw,17px) Georgia,serif}
+
+/* portal 7: seis universos */
+.story-constellation{inset:17% 3% 8%;overflow:visible}
+.story-orbit{border-color:hsl(var(--h) 70% 70%/.3)}
+.story-hub{width:clamp(120px,12vw,210px);height:clamp(120px,12vw,210px);border:2px solid hsl(var(--h) 80% 70%/.6);box-shadow:0 0 70px hsl(var(--h) 80% 60%/.4)}
+.story-hub span{font-size:clamp(10px,.9vw,15px)}
+.world-planet{width:clamp(96px,10.5vw,190px);border-width:2px;box-shadow:0 0 34px hsl(var(--world-hue) 85% 62%/.5),inset -14px -16px 24px #03040a99}
+.world-planet img{opacity:1;mix-blend-mode:normal}
+.world-planet>span{position:absolute;left:6%;top:4%;z-index:2;display:grid;place-items:center;width:1.9em;height:1.9em;background:var(--paper);color:var(--ink);font:900 clamp(13px,1.1vw,19px) "Bodoni MT Black",Georgia,serif;rotate:-6deg}
+.story-world{width:clamp(160px,17vw,300px)}
+.story-world strong{max-width:none;background:var(--paper);color:var(--ink);padding:.18em .55em .22em;font:700 clamp(13px,1.2vw,21px) Georgia,serif;rotate:-1.5deg;clip-path:polygon(1% 6%,99% 0,100% 94%,0 100%);text-shadow:none}
+.story-world:nth-of-type(odd) strong{rotate:1.5deg}
+.story-detail{background:#0d0e1cf7;width:min(760px,70vw)}
+.story-detail h2{font-size:clamp(18px,1.9vw,32px)}
+.story-detail-copy>p{font-size:clamp(16px,1.35vw,22px)}
+.cameo{object-fit:contain;padding:14%;background:radial-gradient(circle at 35% 30%,hsl(var(--h) 60% 34%),#090a17 78%)}
+.world-planet{background:radial-gradient(circle at 35% 28%,hsl(var(--world-hue) 70% 52%/.85),hsl(var(--world-hue) 60% 26%/.9) 45%,#0a0b18 85%)}
+.world-planet img{inset:17%;width:66%;height:66%;object-fit:contain;border-radius:0;filter:drop-shadow(0 0 12px hsl(var(--world-hue) 90% 75%/.7)) drop-shadow(0 3px 4px #000a);transition:transform .4s}
+.story-world:hover .world-planet img,.story-world.selected .world-planet img{transform:scale(1.08) rotate(-3deg)}
+.world-planet img{filter:url(#story-ink) drop-shadow(0 0 12px hsl(var(--world-hue) 90% 75%/.7))}
+.cameo{filter:url(#story-ink)}
+.story-detail-image img{filter:url(#story-ink);padding:10%;object-fit:contain;background:radial-gradient(circle,#2b2250,#0a0b18)}
+/* ilustraciones propias de los cuentos (SVG a color) */
+.world-planet img{inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;filter:none;padding:0}
+.world-planet{background:#0a0b18}
+.world-planet:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset -16px -18px 26px #03040acc;pointer-events:none}
+.story-world:hover .world-planet img,.story-world.selected .world-planet img{transform:scale(1.08)}
+.cameo{filter:none;padding:0;object-fit:cover;background:#090a17}
+.cameo-bird{object-fit:contain;padding:7px;box-sizing:border-box;background:radial-gradient(circle,#5a2a3a,#090a17 80%)}
+.story-detail-image img{filter:none;padding:0;object-fit:cover;background:none}
+.story-hub{overflow:hidden;position:absolute}
+.story-hub img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;border-radius:50%}
+.story-hub svg,.story-hub span{position:relative;text-shadow:0 2px 6px #000,0 0 14px #000}
+.editable-book{display:flex;align-items:center;gap:16px}
+.editable-book>div{display:grid;gap:6px}
+.book-cover{width:clamp(70px,7vw,130px);aspect-ratio:1.4;object-fit:cover;rotate:-3deg;border:3px solid #f1e9d2;box-shadow:0 6px 16px #000a}
