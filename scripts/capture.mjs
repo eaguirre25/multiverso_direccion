@@ -22,7 +22,7 @@ ws.onmessage = e => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id
 const send = (method, params = {}) => new Promise(r => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
 
 const only = process.argv[4];
-const shots = only === 'portales' ? Array.from({ length: 9 }, (_, i) => [`portal${i + 1}`, `portal=${i + 1}`, 1920, 1080]) : [
+const shots = only === 'portales' ? Array.from({ length: 9 }, (_, i) => [`portal${i + 1}`, `portal=${i + 1}`, Number(process.env.W ?? 1920), Number(process.env.H ?? 1080)]) : [
   ['portada', 'cover', 1920, 1080], ['mapa', 'map', 1920, 1080],
   ['portada', 'cover', 1366, 768], ['mapa', 'map', 1366, 768],
 ];

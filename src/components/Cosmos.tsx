@@ -132,11 +132,20 @@ export default function Cosmos() {
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let raf = 0; let tx = 0, ty = 0, cx = 0, cy = 0;
+    let raf = 0; let tx = 0, ty = 0, cx = 0, cy = 0; const t0 = performance.now();
     const onMove = (e: PointerEvent) => { tx = e.clientX / window.innerWidth - 0.5; ty = e.clientY / window.innerHeight - 0.5; };
-    const tick = () => {
+    const tick = (now: number) => {
+      const t = (now - t0) / 1000; const el = root.current;
       cx += (tx - cx) * 0.04; cy += (ty - cy) * 0.04;
-      root.current?.style.setProperty('--px', cx.toFixed(4)); root.current?.style.setProperty('--py', cy.toFixed(4));
+      if (el) {
+        const st = el.style; st.setProperty('--px', cx.toFixed(4)); st.setProperty('--py', cy.toFixed(4));
+        // deriva autónoma por profundidad: lenta, continua y sin saltos (el fondo se mueve aunque el mouse esté quieto)
+        st.setProperty('--nx', (Math.sin(t / 22) * 18).toFixed(2)); st.setProperty('--ny', (Math.cos(t / 27) * 12).toFixed(2));
+        st.setProperty('--fx', (Math.sin(t / 25) * 14).toFixed(2)); st.setProperty('--fy', (Math.sin(t / 31) * 8).toFixed(2));
+        st.setProperty('--rx', (Math.sin(t / 17 + 1) * 34).toFixed(2)); st.setProperty('--ry', (Math.cos(t / 19) * 22).toFixed(2));
+        st.setProperty('--dx', (Math.sin(t / 13 + 2) * 52).toFixed(2)); st.setProperty('--dy', (Math.cos(t / 15) * 30).toFixed(2));
+        st.setProperty('--tw', (0.82 + 0.18 * Math.sin(t / 2.6)).toFixed(3));
+      }
       raf = requestAnimationFrame(tick);
     };
     window.addEventListener('pointermove', onMove); raf = requestAnimationFrame(tick);

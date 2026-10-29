@@ -1,0 +1,214 @@
+/* ==================================================================
+   Versión 2 · legibilidad de auditorio, conexiones dinámicas,
+   transición dimensional y escenas rediseñadas.
+   Tamaños objetivo a 1920×1080 (clamp escala hacia 1366×768).
+   ================================================================== */
+
+/* ---------- Tipografía general ---------- */
+.eyebrow{font-size:clamp(14px,1.1vw,22px)!important;letter-spacing:.28em}
+.subtle-button,.portal-nav button,.utility-controls button,.enter-button{font-size:clamp(14px,1.25vw,24px)!important}
+.portal-nav span{font-size:clamp(14px,1.2vw,22px)}
+.subtle-button kbd{font-size:clamp(12px,1vw,18px)}
+.map-footer{font-size:clamp(12px,1.05vw,20px)!important;letter-spacing:.12em}
+.utility-controls button{padding:.55em .8em}
+.utility-controls .motion-icon{width:1.2em;height:1.2em}
+.map-heading{font-size:clamp(26px,2.2vw,44px)!important}
+.gate-num{font-size:clamp(22px,1.9vw,36px)!important}
+.gate-label{font-size:clamp(26px,2.1vw,40px)!important}
+.portal-heading{font-size:clamp(34px,4vw,76px)!important;max-width:68vw}
+.portal-top .subtle-button{padding:.6em .9em}
+
+/* ---------- Estructura de cada universo ---------- */
+.portal-body{top:21%;bottom:9%;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);gap:2.4vw}
+.art-slot{container-type:size;width:100%;height:100%;min-width:0;display:grid;place-items:center}
+.scene-art{width:min(100cqw,142.857cqh);height:auto;aspect-ratio:10/7;overflow:visible}
+.art-lines{overflow:visible}
+.portal-copy{align-self:stretch;max-height:100%;overflow:auto;display:flex;flex-direction:column;justify-content:center;scrollbar-width:thin}
+.portal-kicker{font-size:clamp(16px,1.25vw,26px)!important;margin-bottom:.7em}
+.portal-description{font-size:clamp(21px,1.9vw,40px)!important;line-height:1.32}
+.art-question{position:absolute;left:50%;translate:-50% -50%;width:92%;margin:0;text-align:center;z-index:4;font:italic 700 clamp(24px,2vw,40px)/1.25 Georgia,"Times New Roman",serif;color:#f6efe0;text-shadow:0 2px 14px #000,0 0 4px #000}
+.art-cap{position:absolute;translate:-50% 0;z-index:3;white-space:nowrap;font:600 clamp(18px,1.4vw,26px) Georgia,serif;color:#dccfe9;text-shadow:0 2px 8px #000}
+.art-center{font-size:clamp(34px,4vw,72px)}
+
+/* recortes de texto de las escenas */
+.scrap{font-size:calc(var(--s,1)*clamp(22px,1.9vw,38px))!important}
+.scrap:focus-visible{outline:none;filter:brightness(1.3) drop-shadow(0 0 12px #fff);z-index:9}
+.scrap.emerge{animation:scrap-in .7s cubic-bezier(.2,.8,.25,1.12) var(--d,0ms) both,emerge 4.5s ease-in-out 2.6s infinite}
+.scrap.core{animation:scrap-in .7s cubic-bezier(.2,.8,.25,1.12) var(--d,0ms) both,core 5s ease-in-out 2s infinite}
+@keyframes emerge{0%,100%{filter:drop-shadow(0 0 6px hsl(175 90% 60%/.3))}50%{filter:drop-shadow(0 0 26px hsl(175 95% 65%/.95)) brightness(1.15)}}
+@keyframes core{0%,100%{filter:drop-shadow(0 0 8px hsl(40 90% 60%/.3))}50%{filter:drop-shadow(0 0 28px hsl(40 100% 65%/.9)) brightness(1.1)}}
+
+/* ---------- Conexiones dinámicas (Flow) ---------- */
+.flow{opacity:0;animation:flow-in 1.2s ease forwards}
+@keyframes flow-in{to{opacity:1}}
+.flow-line{fill:none;stroke:hsl(var(--h) 85% 74%/.6);stroke-width:calc(1.8px*var(--w));vector-effect:non-scaling-stroke;stroke-linecap:round;transition:stroke .3s,stroke-width .3s,opacity .4s}
+.flow-glow{fill:none;stroke:hsl(var(--h) 95% 62%/.2);stroke-width:8px;vector-effect:non-scaling-stroke;filter:blur(3px);transition:stroke .3s,stroke-width .3s,opacity .4s}
+.flow-dash .flow-line{stroke-dasharray:4 9;animation:fil-run2 16s linear infinite}
+.flow-dot{fill:hsl(var(--h) 100% 90%);filter:drop-shadow(0 0 5px hsl(var(--h) 100% 65%)) drop-shadow(0 0 12px hsl(var(--h) 100% 60%/.7));transition:r .3s,opacity .4s}
+.flow-bit{fill:#eadfc2;filter:drop-shadow(0 1px 1px #000);transition:opacity .4s}
+.flow-on .flow-line{stroke:hsl(var(--h) 100% 88%);stroke-width:calc(3.6px*var(--w))}
+.flow-on .flow-glow{stroke:hsl(var(--h) 100% 66%/.65);stroke-width:15px}
+.flow-on .flow-dot{r:7px}
+.flow-dim .flow-line,.flow-dim .flow-glow,.flow-dim .flow-dot,.flow-dim .flow-bit{opacity:.16}
+.rip{stroke:hsl(15 95% 72%/.75);stroke-width:2.5px;vector-effect:non-scaling-stroke}
+.rip2{stroke:hsl(330 90% 76%/.85);stroke-width:3px}
+.ripple-svg{overflow:hidden}
+
+/* ---------- Fichas bibliográficas (APA) ---------- */
+.aref-list{margin-top:clamp(12px,1.4vw,26px);display:grid;gap:.15em}
+.aref-title{margin:0 0 .3em;font:700 clamp(16px,1.2vw,24px) "Courier New",monospace;letter-spacing:.22em;text-transform:uppercase;color:hsl(var(--h) 85% 76%)}
+.aref{display:block;position:relative}
+.aref-btn{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-wrap:wrap;align-items:baseline;gap:.1em .6em;width:100%;padding:.22em .45em;border-radius:6px;color:#f2ead8;font:clamp(20px,1.45vw,28px)/1.25 Georgia,"Times New Roman",serif;transition:background .2s}
+.aref-btn:hover,.aref-open .aref-btn{background:#ffffff1c}
+.aref-btn:focus-visible{outline:3px solid hsl(var(--h) 90% 75%);outline-offset:2px}
+.aref-cite{font:700 clamp(20px,1.4vw,26px) "Courier New",monospace;color:hsl(var(--h,40) 90% 78%);white-space:nowrap}
+.aref-cite:after{content:" ▾";font-size:.8em;opacity:.7}
+.aref-open .aref-cite:after{content:" ▴"}
+.aref-full{display:block;margin:.2em .2em .6em;padding:.6em .85em;border-left:4px solid hsl(var(--h,40) 80% 68%);background:#ffffff12;font:clamp(17px,1.25vw,23px)/1.45 Georgia,serif;color:#ebe3d2;animation:scene-enter .25s both}
+.aref-popover{display:inline-block;width:auto}
+.aref-popover .aref-full{position:absolute;left:0;top:100%;width:max(100%,22em);z-index:30;background:#090a16f7;box-shadow:0 14px 40px #000c}
+.aref-popover .aref-up{top:auto;bottom:100%}
+
+/* ---------- Escena 5: tres núcleos ---------- */
+.core-card{position:absolute;translate:-50% -50%;width:37%;z-index:4;padding:.55em .8em .6em;background:#0a0b1ceb;border:2px solid hsl(var(--h) 70% 66%/.55);display:grid;gap:.3em;text-align:left;animation:scrap-in .7s cubic-bezier(.2,.8,.25,1.1) var(--d,0ms) both;transition:border-color .3s,box-shadow .3s}
+.core-card:hover,.core-hot{border-color:hsl(var(--h) 95% 80%);box-shadow:0 0 34px hsl(var(--h) 90% 60%/.45)}
+.core-open{z-index:14}
+.core-name{justify-self:start;background:var(--bg);color:var(--ink);padding:.12em .5em .16em;font-size:clamp(24px,1.9vw,36px);line-height:1.1;clip-path:polygon(1% 6%,99% 0,100% 94%,0 100%)}
+.core-card ul{margin:0;padding:0;list-style:none;display:grid;gap:.05em}
+.core-card li{font:clamp(22px,1.6vw,32px)/1.2 Georgia,serif;color:#f6eedd}
+.core-card li:before{content:"✦ ";color:hsl(var(--h) 90% 75%);font-size:.7em}
+
+/* ---------- Escena 3: decisiones narrativas ---------- */
+.ops{position:absolute;left:50%;bottom:-3%;translate:-50% 0;z-index:6;display:flex;flex-wrap:wrap;gap:.5em;justify-content:center;width:100%}
+.op{border:0;cursor:pointer;background:#cfc5ae;color:#16131a;font:700 clamp(18px,1.4vw,26px) Georgia,serif;padding:.3em .75em .35em;clip-path:polygon(1% 8%,99% 0,100% 92%,0 100%);transition:background .25s,transform .2s;opacity:.85}
+.op:hover{transform:translateY(-3px) rotate(-1deg);opacity:1}
+.op:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.op-on{background:#e8b45a;opacity:1}
+
+/* ---------- Escena 6: tipos de presencia ---------- */
+.coral-core .scrap{z-index:5}
+.cameo{width:clamp(60px,6.4vw,124px)!important;aspect-ratio:1;object-fit:cover;position:absolute;translate:-50% -50%;pointer-events:none;box-shadow:0 0 24px hsl(var(--h) 85% 60%/.4)}
+.cameo-vivo{border-radius:50%;border:3px solid #6ee6b0;background:#090a17}
+.cameo-objeto{border-radius:10px;border:3px dashed #e8b45a;background:#12100a}
+.cameo-otro{border-radius:46% 54% 50% 48%;border:3px dotted #f07cc0;background:#14091a}
+.pres{transition:opacity .35s}.pres-dim{opacity:.35}
+.legend{position:absolute;left:50%;top:72%;translate:-50% 0;margin:0;padding:0;list-style:none;display:flex;gap:1.1em;font:600 clamp(18px,1.4vw,26px) Georgia,serif;color:#efe6d4;z-index:3;white-space:nowrap}
+.legend li:before{content:"";display:inline-block;width:.9em;height:.9em;margin-right:.4em;vertical-align:-.1em;border:3px solid}
+.lg-vivo:before{border-color:#6ee6b0;border-radius:50%}.lg-objeto:before{border-color:#e8b45a;border-style:dashed;border-radius:3px}.lg-otro:before{border-color:#f07cc0;border-style:dotted;border-radius:40%}
+
+/* ---------- Escena 7: seis cuentos en órbita ---------- */
+.art-7 .story-hub{position:absolute;left:50%;top:47%;translate:-50% -50%;width:17%;height:auto;aspect-ratio:1;border-radius:50%;overflow:hidden;z-index:2;display:grid;place-items:center}
+.art-7 .story-hub span{font-size:clamp(14px,1.2vw,24px)!important;font-weight:700;color:#fff3d2;text-align:center;position:relative}
+.art-7 .story-world{position:absolute;transform:none;translate:-50% -50%;width:auto;display:block;padding:0;border:0;background:none;cursor:pointer;z-index:3}
+.world-sway{display:grid;justify-items:center;gap:.5em;animation:sway var(--sway,20s) ease-in-out var(--sd,0s) infinite}
+.story-world:hover .world-sway,.story-world.selected .world-sway,.story-world:focus-visible .world-sway{animation-play-state:paused}
+@keyframes sway{0%{transform:translate(0,0)}25%{transform:translate(13px,-9px)}50%{transform:translate(0,-16px)}75%{transform:translate(-13px,-7px)}100%{transform:translate(0,0)}}
+.art-7 .world-planet{width:clamp(120px,11.5vw,224px)}
+.art-7 .story-world strong{font-size:clamp(20px,1.65vw,32px)!important;max-width:11em;text-align:center;line-height:1.15}
+.story-world:focus-visible .world-planet{outline:4px solid #fff;outline-offset:4px}
+.art-7 .story-detail{position:absolute;left:50%;top:50%;transform:none;translate:-50% -50%;width:108%;max-height:106%;overflow:auto;display:grid;grid-template-columns:38% 1fr;gap:2.2%;align-items:center;padding:2.2% 2.6%;background:#090a17fa;border:2px solid #e8b45a99;z-index:20;box-shadow:0 20px 70px #000d}
+.art-7 .story-detail-image{height:auto;aspect-ratio:1;flex:none}
+.art-7 .story-detail-image img{width:100%;height:100%;object-fit:cover}
+.art-7 .story-detail-copy{min-width:0}
+.art-7 .story-detail h2{font:700 clamp(30px,3vw,58px)/1.05 Georgia,serif;margin:.1em 0 .3em}
+.sd-desc{font:clamp(20px,1.6vw,32px)/1.38 Georgia,serif;margin:0 0 .8em;color:#f3ecdc}
+.sd-problem{font:clamp(18px,1.4vw,27px)/1.35 Georgia,serif;margin:0 0 .6em;color:#d7cde6;border-left:4px solid #e8b45a;padding-left:.7em}
+.sd-problem b{display:block;font:700 .72em "Courier New",monospace;letter-spacing:.18em;text-transform:uppercase;color:#e8b45a;margin-bottom:.3em}
+.art-7 .close-detail{position:absolute;right:.5em;top:.2em;font-size:clamp(28px,2.4vw,46px);line-height:1;cursor:pointer;color:#efe4c8;background:none;border:0}
+
+/* ---------- Escena 8: manuscrito ---------- */
+.manuscript{top:42%;width:82%;height:56%;padding:5% 6%;display:flex;flex-direction:column;justify-content:center}
+.ms-quote{font-size:clamp(30px,3.5vw,66px)!important}
+.ms-cite{font-size:clamp(18px,1.45vw,27px)!important;letter-spacing:.06em}
+.ms-scribble{left:6%;bottom:4%;width:88%}
+.ms-scribble path{stroke-width:3.2;stroke-dasharray:600;stroke-dashoffset:600;animation:draw 3.2s .9s ease forwards,ink 6s 4s ease-in-out infinite alternate}
+.ms-scribble .ms-s2{stroke:#a3243a;animation-delay:1.8s,5s}
+@keyframes ink{from{stroke-dashoffset:0;opacity:1}to{stroke-dashoffset:0;opacity:.55}}
+
+/* ---------- Escena 9: se conserva .ripples antiguo sin uso ---------- */
+
+/* ---------- Mapa: conexiones vivas ---------- */
+.filament{opacity:.9;transition:opacity .5s}
+.filament.off{opacity:.14}
+.fil-line{stroke-width:2}
+.fil-back{animation-direction:reverse;stroke:hsl(var(--h) 90% 82%);opacity:.7}
+.filament.on .fil-pulse{stroke-width:5;opacity:1}
+.gate{transition:opacity .5s}
+.gate-off{opacity:.55}
+.gate-off .gate-tilt{filter:brightness(.7) saturate(.8)}
+.map-return .gate{animation:gate-in .9s cubic-bezier(.2,.8,.2,1.1) both;animation-delay:calc(.5s + var(--i,0)*85ms)}
+.map-return .filament{animation:fil-in 1.4s ease both;animation-delay:calc(1s + var(--i,0)*90ms)}
+.map-return .stage{animation:map-in 1.3s cubic-bezier(.2,.7,.2,1) both}
+.map-return .school-core{animation:school-in 1.3s ease both,school-bob 10s ease-in-out 1.3s infinite}
+@keyframes gate-in{from{opacity:0;transform:scale(.35)}to{opacity:1;transform:none}}
+@keyframes fil-in{from{opacity:0}to{opacity:.9}}
+@keyframes map-in{from{opacity:0;transform:scale(1.5)}to{opacity:1;transform:none}}
+@keyframes school-in{from{opacity:0;filter:blur(10px)}to{opacity:1;filter:none}}
+
+/* ---------- Ingreso dimensional (≈1,7 s) ---------- */
+.stage.diving{animation:dive 1.7s cubic-bezier(.5,0,.75,.35) forwards!important}
+@keyframes dive{0%{transform:scale(1)}28%{transform:scale(1.12)}100%{transform:scale(12)}}
+.stage[data-diving="true"] .gate:not(.gate-approach){opacity:.1;transition:opacity .6s}
+.stage[data-diving="true"] .school-core,.stage[data-diving="true"] .school-halo,.stage[data-diving="true"] .school-rays{opacity:.15;transition:opacity .7s}
+.stage[data-diving="true"] .filament:not(.on){opacity:.06}
+.stage[data-diving="true"] .filament.on{opacity:1}
+.gate-approach{z-index:30}
+.gate-approach .gate-tilt{transform:perspective(900px) rotateY(0) rotateZ(0) scale(1.7)!important;filter:brightness(1.9) saturate(1.3) drop-shadow(0 0 90px hsl(var(--h) 95% 70%))!important;transition:transform 1.6s cubic-bezier(.5,0,.8,.3),filter .9s!important}
+.gate-approach .gate-spin{animation-duration:1.8s!important}
+.gate-approach .gate-spin-rev{animation-duration:2.2s!important}
+.gate-approach .gate-spin-slow{animation-duration:3s!important}
+.dive-tunnel{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
+.dive-tunnel b{position:absolute;inset:0;background:radial-gradient(circle at var(--tx,50%) var(--ty,50%),#fff 0,hsl(var(--h) 95% 78%) 6%,hsl(var(--h) 75% 34%/.95) 30%,#05050f 78%);opacity:0;animation:tun-wash 1.7s ease-in forwards}
+.dive-tunnel i{position:absolute;left:var(--tx,50%);top:var(--ty,50%);width:26vmin;aspect-ratio:1;translate:-50% -50%;border-radius:50%;border:3px solid hsl(var(--h) 95% 78%/.85);box-shadow:0 0 36px hsl(var(--h) 95% 62%/.7),inset 0 0 36px hsl(var(--h) 95% 62%/.5);opacity:0;animation:tun-ring 1.1s cubic-bezier(.4,0,.9,.6) forwards}
+.dive-tunnel i:nth-of-type(1){animation-delay:.45s}.dive-tunnel i:nth-of-type(2){animation-delay:.6s}.dive-tunnel i:nth-of-type(3){animation-delay:.75s}.dive-tunnel i:nth-of-type(4){animation-delay:.9s}
+.dive-tunnel:before{content:"";position:absolute;inset:-30%;background:repeating-conic-gradient(from 0deg at var(--tx,50%) var(--ty,50%),transparent 0 2.4deg,hsl(var(--h) 100% 88%/.55) 2.8deg 3.2deg,transparent 3.6deg 7.5deg);-webkit-mask:radial-gradient(circle at var(--tx,50%) var(--ty,50%),transparent 6%,#000 38%);mask:radial-gradient(circle at var(--tx,50%) var(--ty,50%),transparent 6%,#000 38%);opacity:0;animation:tun-streak 1.7s ease-in forwards}
+@keyframes tun-wash{0%,38%{opacity:0}85%{opacity:1}100%{opacity:1}}
+@keyframes tun-ring{0%{opacity:0;transform:scale(.2)}25%{opacity:1}100%{opacity:0;transform:scale(9)}}
+@keyframes tun-streak{0%,30%{opacity:0;transform:scale(.6)}70%{opacity:.9}100%{opacity:.6;transform:scale(2.4)}}
+
+/* entrada al universo: la atmósfera cambia de color y los elementos aparecen en capas */
+.portal-scene.entering{animation:universe-in 1.5s cubic-bezier(.2,.7,.2,1) both}
+.portal-scene.entering:after{animation:atmos-in 2.2s ease-out both}
+.portal-scene.entering .portal-heading{animation:rise .9s .45s cubic-bezier(.2,.8,.2,1) both}
+.portal-scene.entering .art-slot{animation:rise 1s .8s cubic-bezier(.2,.8,.2,1) both}
+.portal-scene.entering .portal-copy{animation:rise .9s 1.2s cubic-bezier(.2,.8,.2,1) both}
+.portal-scene.leaving{animation:universe-out .65s cubic-bezier(.5,0,.8,.4) forwards!important}
+@keyframes universe-in{from{opacity:0;transform:scale(1.18);filter:brightness(2.6) saturate(1.5) blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes atmos-in{from{opacity:0;filter:brightness(3)}to{opacity:1;filter:none}}
+@keyframes universe-out{to{opacity:0;transform:scale(.55);filter:brightness(1.8) blur(8px)}}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* movimiento reducido (interruptor de la interfaz) */
+.motion-reduced .flow-dot,.motion-reduced .flow-bit{display:none}
+.motion-reduced .world-sway,.motion-reduced .gate-spin,.motion-reduced .gate-spin-rev,.motion-reduced .gate-spin-slow,.motion-reduced .cut-pop{animation:none!important}
+@media (prefers-reduced-motion:reduce){.dive-tunnel i,.dive-tunnel:before{display:none}.world-sway{animation:none}}
+/* ---------- Cosmos: deriva autónoma y centelleo ---------- */
+.cosmos-nebula{transform:translate3d(calc(var(--px)*-16px + var(--nx,0)*1px),calc(var(--py)*-10px + var(--ny,0)*1px),0)}
+.cosmos-far{transform:translate3d(calc(var(--px)*-9px + var(--fx,0)*1px),calc(var(--py)*-6px + var(--fy,0)*1px),0)}
+.cosmos-near{transform:translate3d(calc(var(--px)*-30px + var(--rx,0)*1px),calc(var(--py)*-20px + var(--ry,0)*1px),0);animation:none}
+.cosmos-dust{transform:translate3d(calc(var(--px)*-46px + var(--dx,0)*1px),calc(var(--py)*-30px + var(--dy,0)*1px),0) scale(1.06)}
+.cosmos-ready .cosmos-near{opacity:var(--tw,1)}
+.cosmos-ready .cosmos-far{opacity:calc(1.64 - var(--tw,1))}
+.cosmos-motes i{animation-duration:calc(var(--dur) * 1.4)}
+/* ajustes tras revisión visual */
+.portal-body{top:24%;bottom:8%}
+.portal-copy{justify-content:safe center}
+.portal-description{font-size:clamp(20px,1.8vw,38px)!important}
+.aref-btn{font-size:clamp(18px,1.3vw,25px)}
+.aref-cite{font-size:clamp(20px,1.3vw,25px)}
+.art-center-s5{font-size:clamp(26px,2.5vw,48px)}
+.ops{bottom:0}
+.legend{top:96%}
+.legend{font-size:clamp(16px,1.2vw,22px)}
+.manuscript{padding:4% 6% 16%}
+.ms-scribble{width:76%;bottom:3%}
+.art-7 .story-hub{width:15%}
+.art-7 .world-planet{width:clamp(100px,9.4vw,180px)}
+.art-7 .story-world strong{font-size:clamp(18px,1.5vw,29px)!important;max-width:9em}
+.art-question{font-size:clamp(22px,1.85vw,37px)}
+.art-7 .world-planet{width:clamp(88px,8vw,154px)}
+.art-7 .story-world strong{font-size:clamp(17px,1.35vw,26px)!important;max-width:8.5em}
+.art-7 .story-hub{width:18%}
+.art-7 .story-hub span{font-size:clamp(11px,.95vw,19px)!important}
+.aref-hint{margin:.6em 0 0;font:italic clamp(18px,1.35vw,26px)/1.35 Georgia,serif;color:#cfc4e0}
+.portal-nav{left:3.4vw!important;transform:none!important;bottom:2.4vh!important}
