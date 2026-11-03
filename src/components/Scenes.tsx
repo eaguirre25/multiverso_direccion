@@ -61,35 +61,6 @@ function S2() {
   </>;
 }
 
-/* 3 · Registros y experiencias se transforman por decisiones narrativas -- */
-function S3() {
-  const [op, setOp] = useState(0);
-  const OPS = ['condensar escenas', 'modificar temporalidades', 'seleccionar voces', 'reorganizar relaciones'];
-  const OUT: Pos[][] = [
-    [[80, 26], [90, 46], [82, 66], [68, 78]], [[72, 22], [88, 38], [74, 62], [90, 74]],
-    [[84, 20], [70, 40], [90, 60], [76, 80]], [[66, 24], [90, 30], [86, 70], [70, 62]],
-  ];
-  const o = OUT[op]; const COMP: Pos = [48, 50];
-  const paths: FlowPath[] = [
-    { id: 'r', ...link([14, 22], COMP, 40, 20), n: 3, dur: 6, shape: 'paper', hue: 40, tags: ['reg'] },
-    { id: 'e', ...link([14, 72], COMP, -40, 20), n: 3, dur: 7, shape: 'paper', hue: 25, tags: ['exp'], delay: 0.3 },
-    { id: 'i', ...link([48, 12], [COMP[0], COMP[1] - 9], 30, 16), n: 3, dur: 5, hue: 300, tags: ['ima'] },
-    ...o.map((p, i) => ({ id: `o${i}-${op}`, ...link([COMP[0] + 12, COMP[1]], p, i % 2 ? 50 : -50, 24), n: 2, dur: 5 + i * 0.7, hue: 175, tags: ['comp'], delay: i * 0.12 } as FlowPath)),
-    ...o.map((p, i) => ({ id: `n${i}-${op}`, ...link(p, o[(i + 1) % o.length], 40, 14), n: 2, dur: 6 + i, dir: 0 as const, hue: 320, delay: 0.5 + i * 0.1 } as FlowPath)),
-  ];
-  return <>
-    <Flow paths={paths} />
-    <Scrap t="REGISTROS" x={14} y={22} r={-4} paper="news" font="type" s={1.05} d={200} />
-    <Scrap t="EXPERIENCIAS" x={14} y={72} r={3} paper="cream" font="ital" s={1.05} d={350} />
-    <Scrap t="IMAGINACIÓN" x={48} y={11} r={-2} paper="magenta" font="didone" s={1.1} d={500} />
-    <Scrap t="COMPOSICIÓN FICCIONAL" x={COMP[0]} y={COMP[1]} r={op % 2 ? 3 : -3} paper="black" font="didone" s={1.1} move d={650} />
-    {o.map((p, i) => <Scrap key={i} t={['cuento', 'escena', 'voz', 'tiempo'][(i + op) % 4]} x={p[0]} y={p[1]} r={(i - 1.5) * 4} paper={(['aged', 'teal', 'white', 'red'] as Paper[])[(i + op) % 4]} font={(['slab', 'grot', 'ital', 'cond'] as Font[])[(i + op) % 4]} s={0.9} move d={i * 60} />)}
-    <div className="ops" role="group" aria-label="Decisiones narrativas">
-      {OPS.map((t, i) => <button key={t} type="button" className={`op${i === op ? ' op-on' : ''}`} aria-pressed={i === op} onClick={() => setOp(i)}>{t}</button>)}
-    </div>
-  </>;
-}
-
 /* 4 · Una trama institucional de la que surgen dos trayectorias que se encuentran sin fundirse */
 function S4() {
   const [hot, setHot] = useState<string | null>(null);
@@ -251,8 +222,8 @@ function S9() {
 }
 
 export function SceneArt({ id }: { id: number }) {
-  const body = { 1: <S1 />, 2: <S2 />, 3: <S3 />, 4: <S4 />, 5: <S5 />, 6: <S6 />, 8: <S8 />, 9: <S9 /> }[id];
-  const p = portals[id - 1];
+  const body = { 1: <S1 />, 2: <S2 />, 4: <S4 />, 5: <S5 />, 6: <S6 />, 8: <S8 />, 9: <S9 /> }[id];
+  const p = portals.find(x => x.art === id) ?? portals[0];
   return <div className="art-slot"><div className={`scene-art art-${id}`} role="group" aria-label={`Composición del universo ${id}: ${p.title}`}><div className="art-glow" aria-hidden="true" />{body}</div></div>;
 }
 
@@ -285,9 +256,7 @@ export function StoryScene({ selected, onSelect }: { selected: number | null; on
         <p className="sd-desc">{s.description}</p>
         <p className="sd-mood"><b>Atmósfera</b>{s.mood}</p>
         <p className="sd-problem"><b>Problema que permite interrogar</b>{s.problem}</p>
-        {s.ref && <SdRef k={s.ref} />}
       </div>
     </article>}
   </div></div>;
 }
-function SdRef({ k }: { k: RefKey }) { const [o, setO] = useState(false); return <AcademicReference k={k} open={o} onToggle={() => setO(v => !v)} />; }

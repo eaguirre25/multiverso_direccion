@@ -8,6 +8,7 @@ import { PortalCopy } from './components/AcademicReference';
 import { MotionCtx } from './components/Flow';
 import ThankYou from './components/ThankYou';
 import { stillMode } from './motion';
+import StarDust from './components/StarDust';
 
 type Scene = 'cover' | 'map' | 'portal' | 'thanks';
 function Icon({ name, size = 17 }: { name: 'left' | 'right' | 'expand' | 'home' | 'map'; size?: number }) {
@@ -19,14 +20,14 @@ function Icon({ name, size = 17 }: { name: 'left' | 'right' | 'expand' | 'home' 
   };
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
-const HUES = [277, 185, 30, 334, 48, 145, 260, 206, 13];
+const HUES = [277, 185, 334, 48, 145, 260, 206, 13];
 // Lado donde se coloca el título recortado de cada portal, para que no se pisen entre sí.
-const LABEL_SIDE = ['below', 'left', 'left', 'right', 'left', 'above', 'left', 'left', 'below'] as const;
+const LABEL_SIDE = ['below', 'left', 'right', 'left', 'above', 'left', 'left', 'below'] as const;
 // Composición de la escena central (porcentajes del escenario 16:9).
 // s = escala por plano de profundidad; ry = giro para que cada portal mire hacia la escuela.
 const gates = [
-  { x: 12, y: 41, s: 1.12, ry: 26, rz: -6 }, { x: 30, y: 20, s: 0.78, ry: 16, rz: 4 }, { x: 53, y: 12, s: 0.62, ry: 4, rz: 0 },
-  { x: 76, y: 19, s: 0.86, ry: -16, rz: -4 }, { x: 90, y: 43, s: 1.0, ry: -26, rz: 6 }, { x: 88, y: 76, s: 1.18, ry: -28, rz: -3 },
+  { x: 12, y: 41, s: 1.12, ry: 26, rz: -6 }, { x: 32, y: 18, s: 0.84, ry: 16, rz: 4 },
+  { x: 70, y: 18, s: 0.9, ry: -16, rz: -4 }, { x: 90, y: 43, s: 1.0, ry: -26, rz: 6 }, { x: 88, y: 76, s: 1.18, ry: -28, rz: -3 },
   { x: 66, y: 86, s: 0.78, ry: -14, rz: 5 }, { x: 33, y: 87, s: 0.92, ry: 16, rz: -4 }, { x: 11, y: 76, s: 1.0, ry: 26, rz: 3 },
 ];
 const SCHOOL = { x: 50, y: 52 };
@@ -51,7 +52,7 @@ const toggleFullscreen = () => { if (document.fullscreenElement) void document.e
 export default function App() {
   const q = new URLSearchParams(window.location.search);
   const [scene, setScene] = useState<Scene>(() => (q.get('portal') ? 'portal' : q.get('scene') === 'map' ? 'map' : q.get('scene') === 'thanks' ? 'thanks' : 'cover'));
-  const [portalIndex, setPortalIndex] = useState(() => Math.max(0, Math.min(8, Number(q.get('portal') || 1) - 1)));
+  const [portalIndex, setPortalIndex] = useState(() => Math.max(0, Math.min(portals.length - 1, Number(q.get('portal') || 1) - 1)));
   const [storyIndex, setStoryIndex] = useState<number | null>(null);
   const reduced = stillMode;
   const [transitioning, setTransitioning] = useState(false);
@@ -83,7 +84,7 @@ export default function App() {
   };
   const goMap = () => { if (busy.current || scene === 'map' || scene === 'cover') return; busy.current = true; setStoryIndex(null); leaveThen(() => { showMap(); busy.current = false; }); };
   const goThanks = () => { if (busy.current) return; busy.current = true; leaveThen(() => { setScene('thanks'); setEntering(true); later(() => setEntering(false), 2000); busy.current = false; }); };
-  const enterMap = () => { if (busy.current) return; busy.current = true; setTransitioning(true); later(() => { showMap(); setTransitioning(false); busy.current = false; }, reduced ? 10 : 760); };
+  const enterMap = () => { if (busy.current) return; busy.current = true; setTransitioning(true); later(() => showMap(), reduced ? 10 : 1050); later(() => { setTransitioning(false); busy.current = false; }, reduced ? 20 : 1950); };
   const next = () => { if (portalIndex < portals.length - 1) navigateToPortal(portalIndex + 1); else goThanks(); };
   const prev = () => { if (portalIndex > 0) navigateToPortal(portalIndex - 1); else goMap(); };
 
@@ -94,8 +95,9 @@ export default function App() {
       if (busy.current) return;
       if (event.key === 'Escape') { if (storyIndex !== null) setStoryIndex(null); else goMap(); }
       else if (event.key.toLowerCase() === 'm') goMap();
+      else if (scene === 'portal' && current?.storyPortal && /^[1-6]$/.test(event.key)) setStoryIndex(Number(event.key) - 1);
       else if (event.key === 'ArrowRight') { event.preventDefault(); if (scene === 'cover') enterMap(); else if (scene === 'map') openPortal(0); else if (scene === 'portal') next(); }
-      else if (event.key === 'ArrowLeft') { event.preventDefault(); if (scene === 'portal') prev(); else if (scene === 'thanks') navigateToPortal(8); else if (scene === 'map') setScene('cover'); }
+      else if (event.key === 'ArrowLeft') { event.preventDefault(); if (scene === 'portal') prev(); else if (scene === 'thanks') navigateToPortal(portals.length - 1); else if (scene === 'map') setScene('cover'); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -103,7 +105,7 @@ export default function App() {
 
   return <MotionCtx.Provider value={reduced}><main className="app-shell">
     <CutoutDefs /><GateDefs /><Cosmos />
-    {scene === 'cover' && <section className="cover scene-in">
+    {scene === 'cover' && <section className={`cover scene-in${transitioning ? ' cover-out' : ''}`}>
       <div className="cinema-veil" aria-hidden="true"/>
       <div className="cover-gate" aria-hidden="true" style={{ ['--h' as string]: 38 }}><GateArt id="cover-gate" seed={7} hue={38}/></div>
       <div className="cover-gate cover-gate-b" aria-hidden="true" style={{ ['--h' as string]: 268 }}><GateArt id="cover-gate-b" seed={3} hue={268}/></div>
@@ -146,19 +148,19 @@ export default function App() {
       {targetPortal !== null && <div className="dive-tunnel" aria-hidden="true" style={{ ['--h' as string]: HUES[targetPortal], ['--tx' as string]: `${gates[targetPortal].x}%`, ['--ty' as string]: `${gates[targetPortal].y}%` }}><i/><i/><i/><i/><b/></div>}
     </section>}
 
-    {scene === 'portal' && current && <section key={`portal-${current.id}`} className={`portal-scene scene-in${current.storyPortal ? ' story-scene' : ''}${entering ? ' entering' : ''}${leaving ? ' leaving' : ''}`} style={{ ['--h' as string]: HUES[current.id - 1] }}>
+    {scene === 'portal' && current && <section key={`portal-${current.id}`} className={`portal-scene scene-in${current.storyPortal ? ' story-scene' : ''}${entering ? ' entering' : ''}${leaving ? ' leaving' : ''}`} style={{ ['--h' as string]: HUES[portalIndex] }}>
       <div className="cinema-veil" aria-hidden="true"/>
-      <header className="scene-header portal-top"><div><p className="eyebrow">PORTAL {String(current.id).padStart(2, '0')} / 09</p><h1 className="portal-heading"><CutoutTitle text={current.title} small max={14}/></h1></div><button className="subtle-button" onClick={goMap}><Icon name="map" size={16}/> Volver a la escuela <kbd>Esc</kbd></button></header>
+      <header className="scene-header portal-top"><div><p className="eyebrow">PORTAL {String(current.id).padStart(2, '0')} / {String(portals.length).padStart(2, '0')}</p><h1 className="portal-heading"><CutoutTitle text={current.title} small max={14}/></h1></div><button className="subtle-button" onClick={goMap}><Icon name="map" size={16}/> Volver a la escuela <kbd>Esc</kbd></button></header>
       <div className={`portal-body portal-body-${current.id}`}>
-        {current.storyPortal ? <StoryScene selected={storyIndex} onSelect={setStoryIndex} /> : <SceneArt id={current.id} />}
+        {current.storyPortal ? <StoryScene selected={storyIndex} onSelect={setStoryIndex} /> : <SceneArt id={current.art} />}
         <article className="portal-copy"><p className="portal-kicker">{current.short}</p><PortalCopy key={current.id} portal={current} /></article>
       </div>
       <nav className="portal-nav"><button onClick={prev}><Icon name="left"/> Anterior</button><span>{String(current.id).padStart(2, '0')} <i/> {String(portals.length).padStart(2, '0')}</span><button onClick={next}>Siguiente <Icon name="right"/></button></nav>
     </section>}
 
-    {scene === 'thanks' && <ThankYou entering={entering} leaving={leaving} onPrev={() => navigateToPortal(8)} onCover={() => setScene('cover')} />}
+    {scene === 'thanks' && <ThankYou entering={entering} leaving={leaving} onPrev={() => navigateToPortal(portals.length - 1)} onCover={() => setScene('cover')} />}
 
     <div className="utility-controls"><button title="Pantalla completa (F)" onClick={toggleFullscreen}><Icon name="expand"/><span>Pantalla completa</span></button></div>
-    {transitioning && <div className="warp-transition" aria-hidden="true"><div className="warp-tunnel"/><span>ENTRANDO AL MULTIVERSO</span></div>}
+    {transitioning && !reduced && <StarDust />}
   </main></MotionCtx.Provider>;
 }
