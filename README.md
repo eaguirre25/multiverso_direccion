@@ -58,3 +58,7 @@ Archivos nuevos: `src/components/Cutout.tsx` (títulos de recortes en SVG con pa
 - Todo cambio de universo pasa por el mapa y atraviesa un portal (`navigateToPortal` en `src/App.tsx`). Desde el universo 9 se llega a la pantalla final (`src/components/ThankYou.tsx`), que no es un décimo portal.
 - Se eliminaron el modo presentador, las notas y el interruptor de movimiento. Solo queda «Pantalla completa» (también `F`). Se respeta `prefers-reduced-motion`.
 - El QR de cierre está en `public/assets/qr/qr-cierre.png` (recorte del archivo `Diseño sin título.png`, sin modificar su matriz).
+
+## Uso permanente en esta PC (sin internet, sin servidor)
+
+`npm run build` genera `dist/`, que se abre con doble clic (`index.html`). Para instalarla de forma permanente: ejecutar `scripts/instalar-en-esta-pc.bat`, que copia la presentación a `C:\Users\<usuario>\Multiverso` y crea un acceso directo en el Escritorio que la abre en pantalla completa con Edge. No depende de esta carpeta de desarrollo ni se pierde al reiniciar. El movimiento siempre está activo; `?quieto` en la dirección lo detiene (prueba de accesibilidad).

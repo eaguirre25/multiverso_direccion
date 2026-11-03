@@ -1,0 +1,54 @@
+/* ==================================================================
+   Versión 4 · cosmos dinámico, mapa a pantalla completa con portales y
+   títulos grandes, portales vivos y cierre con QR y tapa.
+   ================================================================== */
+
+/* ---------- Cosmos: deriva visible + capa animada de estrellas ---------- */
+.cosmos-nebula{animation:none;transform:translate3d(calc(var(--px)*-16px + var(--nx,0)*1px),calc(var(--py)*-10px + var(--ny,0)*1px),0) scale(var(--ns,1.04))}
+.cosmos-sky{transform:translate3d(calc(var(--px)*-22px),calc(var(--py)*-14px),0)}
+.cosmos-ready .cosmos-sky{opacity:1}
+
+/* ---------- Mapa central a pantalla completa ---------- */
+.map-scene{position:fixed;inset:0}
+.stage{left:0;top:0;translate:none;width:100%;height:100%;aspect-ratio:auto}
+.stage .filaments{vector-effect:none}
+.fil-line,.fil-glow,.fil-pulse{vector-effect:non-scaling-stroke}
+.school-core{width:min(48%,86vh);top:53%}
+.school-halo{width:78%}
+.gate{width:calc(var(--s)*min(21vw,37vh))}
+.gate-label{font-size:clamp(26px,2.1vw,44px)!important;opacity:1!important;line-height:0;max-width:none;width:max-content}
+.gate-label .cutout{display:block}
+.gate-label-below{left:50%;top:90%;right:auto;bottom:auto;translate:-50% 0;transform-origin:50% 0}
+.gate-label-right{left:84%;top:50%;right:auto;bottom:auto;translate:0 -50%;transform-origin:0 50%}
+.gate-label-left{left:auto;right:84%;top:50%;bottom:auto;translate:0 -50%;transform-origin:100% 50%}
+.gate-label-left .cutout{margin-left:auto}
+.gate:hover .gate-label,.gate-hot .gate-label,.gate:focus-visible .gate-label{scale:1.35}
+.gate-num{font-size:clamp(24px,2vw,40px)!important}
+.map-scene .scene-header{left:3vw}
+.map-heading{font-size:clamp(28px,2.3vw,46px)!important}
+
+/* ---------- Portales vivos: giro, parpadeo de chispas, latido del halo y flotación ---------- */
+.gate-spin{animation-duration:13s!important}
+.gate-spin-rev{animation-duration:17s!important}
+.gate-spin-slow{animation-duration:28s!important}
+.gate-halo{animation:halo-beat 3.2s ease-in-out infinite alternate}
+.gate-art{animation:gate-bob 7s ease-in-out infinite;animation-delay:calc(var(--i,0)*-.9s)}
+.gate-sparks line{animation:spark-flick 1.3s ease-in-out infinite}
+.gate-sparks line:nth-child(2n){animation-delay:-.45s;animation-duration:.9s}
+.gate-sparks line:nth-child(3n){animation-delay:-.8s;animation-duration:1.7s}
+@keyframes spark-flick{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes halo-beat{from{opacity:.45;transform:scale(.97)}to{opacity:1;transform:scale(1.05)}}
+@keyframes gate-bob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-14px) rotate(1.4deg)}}
+.cover-gate .gate-art{animation-duration:11s}
+
+/* ---------- Cierre: tapa del libro, QR y órbita ---------- */
+.thanks-text{left:40%;width:min(44vw,860px)}
+.thanks-title{width:min(34vw,680px)}
+.thanks-names{width:min(38vw,740px)}
+.thanks-side{position:absolute;right:3vw;top:50%;translate:0 -50%;width:min(17vw,27vh);display:grid;gap:clamp(8px,1.4vh,16px);justify-items:center;z-index:5}
+.thanks-cover{width:100%;height:auto;border:3px solid #f1e9d2;box-shadow:0 12px 36px #000d;rotate:2deg}
+.thanks-qr{position:static;right:auto;bottom:auto;width:100%;aspect-ratio:1;padding:10px}
+.thanks-cta{margin:0;text-align:center;font:700 clamp(15px,1.25vw,24px)/1.25 Georgia,serif;color:#f5d890;text-shadow:0 2px 10px #000}
+.utility-controls{z-index:60}
+.gate-label-above{left:50%;bottom:90%;top:auto;right:auto;translate:-50% 0;transform-origin:50% 100%}
+.map-footer{left:32%!important;right:32%!important;justify-content:center!important}

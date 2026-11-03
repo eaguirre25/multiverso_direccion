@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { CutoutSvg, layoutCutout, type WordSpec } from './Cutout';
 import { presentation, stories } from '../data/presentation';
+import { stillMode } from '../motion';
 
 /* Pantalla final: no es un décimo portal académico.
    «MUCHAS GRACIAS» en recortes, las seis ilustraciones en órbita elíptica y el QR. */
@@ -21,11 +22,11 @@ export default function ThankYou({ leaving, entering, onPrev, onCover }: { leavi
   // por lo que nunca se superponen; las imágenes no rotan y conservan su proporción.
   useEffect(() => {
     const el = stage.current; if (!el) return;
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const still = stillMode;
     let raf = 0; const t0 = performance.now();
     const place = (now: number) => {
       const w = el.clientWidth, h = el.clientHeight; const t = still ? 0 : (now - t0) / 1000;
-      const cx = w * 0.44, cy = h * 0.47, rx = w * 0.36, ry = h * 0.34;
+      const cx = w * 0.4, cy = h * 0.47, rx = w * 0.3, ry = h * 0.34;
       pics.current.forEach((im, i) => {
         if (!im) return; const a = -Math.PI / 2 + t * 0.11 + (i * Math.PI) / 3;
         im.style.transform = `translate(${(cx + Math.cos(a) * rx).toFixed(1)}px,${(cy + Math.sin(a) * ry).toFixed(1)}px) translate(-50%,-50%)`;
@@ -45,7 +46,11 @@ export default function ThankYou({ leaving, entering, onPrev, onCover }: { leavi
         <h1 className="thanks-title"><CutoutSvg layout={thanks} label="Muchas gracias" className="cutout-main" /></h1>
         <p className="thanks-names"><CutoutSvg layout={names} label={presentation.authors.join(' · ')} className="cutout-main" /></p>
       </div>
-      <div className="thanks-qr"><img src="./assets/qr/qr-cierre.png" alt="Código QR" onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }} /></div>
+      <aside className="thanks-side" aria-label="Acceso a los cuentos">
+        <img className="thanks-cover" src="./assets/libro/tapa-libro.jpg" alt="Tapa del libro Cuentos más-que-humanos sobre la dirección escolar" />
+        <div className="thanks-qr"><img src="./assets/qr/qr-cuentos.png" alt="Código QR para acceder a los cuentos" /></div>
+        <p className="thanks-cta">Escaneá para acceder a los cuentos</p>
+      </aside>
     </div>
     <nav className="thanks-nav"><button type="button" onClick={onPrev}>← Anterior</button><button type="button" onClick={onCover}>Portada</button></nav>
   </section>;

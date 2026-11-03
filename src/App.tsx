@@ -7,6 +7,7 @@ import { SceneArt, StoryScene } from './components/Scenes';
 import { PortalCopy } from './components/AcademicReference';
 import { MotionCtx } from './components/Flow';
 import ThankYou from './components/ThankYou';
+import { stillMode } from './motion';
 
 type Scene = 'cover' | 'map' | 'portal' | 'thanks';
 function Icon({ name, size = 17 }: { name: 'left' | 'right' | 'expand' | 'home' | 'map'; size?: number }) {
@@ -19,6 +20,8 @@ function Icon({ name, size = 17 }: { name: 'left' | 'right' | 'expand' | 'home' 
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
 const HUES = [277, 185, 30, 334, 48, 145, 260, 206, 13];
+// Lado donde se coloca el título recortado de cada portal, para que no se pisen entre sí.
+const LABEL_SIDE = ['below', 'left', 'left', 'right', 'left', 'above', 'left', 'left', 'below'] as const;
 // Composición de la escena central (porcentajes del escenario 16:9).
 // s = escala por plano de profundidad; ry = giro para que cada portal mire hacia la escuela.
 const gates = [
@@ -50,8 +53,7 @@ export default function App() {
   const [scene, setScene] = useState<Scene>(() => (q.get('portal') ? 'portal' : q.get('scene') === 'map' ? 'map' : q.get('scene') === 'thanks' ? 'thanks' : 'cover'));
   const [portalIndex, setPortalIndex] = useState(() => Math.max(0, Math.min(8, Number(q.get('portal') || 1) - 1)));
   const [storyIndex, setStoryIndex] = useState<number | null>(null);
-  // La accesibilidad respeta la preferencia del sistema; no hay interruptor público.
-  const [reduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const reduced = stillMode;
   const [transitioning, setTransitioning] = useState(false);
   const [targetPortal, setTargetPortal] = useState<number | null>(null);
   const [hoverGate, setHoverGate] = useState<number | null>(null);
@@ -121,10 +123,10 @@ export default function App() {
 
     {scene === 'map' && <section className={`map-scene ${returning ? 'map-return' : 'scene-in'}`}>
       <div className="cinema-veil" aria-hidden="true"/>
-      <header className="scene-header"><div><p className="eyebrow">Mapa central · elegí un portal</p><h1 className="map-heading"><CutoutTitle text="La escuela como universo" small max={11}/></h1></div><button className="subtle-button" onClick={() => setScene('cover')}><Icon name="home" size={16}/> Portada</button></header>
+      <header className="scene-header"><div><p className="eyebrow">Mapa central · elegí un portal</p></div><button className="subtle-button" onClick={() => setScene('cover')}><Icon name="home" size={16}/> Portada</button></header>
       <div className={`stage${targetPortal !== null ? ' diving' : ''}`} data-diving={targetPortal !== null} style={targetPortal !== null ? { ['--ox' as string]: `${gates[targetPortal].x}%`, ['--oy' as string]: `${gates[targetPortal].y}%` } : undefined}>
         <div className="school-halo" aria-hidden="true"/><div className="school-rays" aria-hidden="true"/>
-        <svg className="filaments" viewBox="0 0 1600 900" aria-hidden="true">
+        <svg className="filaments" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
           <defs><filter id="fil-glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter></defs>
           {gates.map((_, i) => <g key={i} className={`filament${hoverGate === i ? ' on' : ''}${hoverGate !== null && hoverGate !== i ? ' off' : ''}${targetPortal === i ? ' on' : ''}`} style={{ ['--h' as string]: HUES[i], ['--i' as string]: i }}>
             <FilPath i={i} className="fil-glow" filter="url(#fil-glow)" live={!reduced}/><FilPath i={i} className="fil-line" live={!reduced}/><FilPath i={i} className="fil-pulse" style={{ animationDelay: `${-i * 1.3}s` }} live={!reduced}/><FilPath i={i} className="fil-pulse fil-back" style={{ animationDelay: `${-i * 0.9 - 2}s` }} live={!reduced}/>
@@ -138,11 +140,10 @@ export default function App() {
             onClick={() => openPortal(index)} aria-label={`Abrir portal ${portal.id}: ${portal.title}`}>
             <span className="gate-tilt"><GateArt id={`g${portal.id}`} seed={portal.id} hue={hue}/></span>
             <span className="gate-num">{String(portal.id).padStart(2, '0')}</span>
-            <span className={`gate-label${g.y > 60 ? ' gate-label-up' : ''}${g.x < 20 ? ' gate-label-l' : ''}${g.x > 80 ? ' gate-label-r' : ''}`}><CutoutTitle text={portal.title} small max={9} seed={portal.id * 31}/></span>
+            <span className={`gate-label gate-label-${LABEL_SIDE[index]}`}><CutoutTitle text={portal.title} small max={7} seed={portal.id * 31}/></span>
           </button>; })}
       </div>
       {targetPortal !== null && <div className="dive-tunnel" aria-hidden="true" style={{ ['--h' as string]: HUES[targetPortal], ['--tx' as string]: `${gates[targetPortal].x}%`, ['--ty' as string]: `${gates[targetPortal].y}%` }}><i/><i/><i/><i/><b/></div>}
-      <footer className="map-footer"><span>9 portales · un mapa abierto</span><span>← → recorrer · F pantalla completa · M mapa</span></footer>
     </section>}
 
     {scene === 'portal' && current && <section key={`portal-${current.id}`} className={`portal-scene scene-in${current.storyPortal ? ' story-scene' : ''}${entering ? ' entering' : ''}${leaving ? ' leaving' : ''}`} style={{ ['--h' as string]: HUES[current.id - 1] }}>

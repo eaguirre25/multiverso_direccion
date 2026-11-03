@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { stillMode } from '../motion';
 
 /* ------------------------------------------------------------------
    Universo procedural: nebulosas con gas y polvo oscuro (ruido fractal
@@ -130,22 +131,49 @@ export default function Cosmos() {
     return () => window.clearTimeout(t);
   }, []);
 
+  const sky = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let raf = 0; let tx = 0, ty = 0, cx = 0, cy = 0; const t0 = performance.now();
+    if (stillMode) return;
+    const el = root.current; const cv = sky.current; if (!el || !cv) return;
+    const ctx = cv.getContext('2d'); if (!ctx) return;
+    const W = cv.width, H = cv.height; const rand = rng(2468);
+    // Estrellas que derivan con velocidad según su profundidad, titilan y se envuelven en los bordes.
+    const tint = ['#fff4de', '#ffe3b0', '#cfdcff', '#bfeaff', '#ffd1a3'];
+    const stars = Array.from({ length: 300 }, () => { const z = rand(); return { x: rand() * W, y: rand() * H, z, r: 0.7 + z * 2.1, vx: 5 + z * 26, vy: (rand() - 0.5) * (3 + z * 8), ph: rand() * 6.28, sp: 0.6 + rand() * 2.6, c: tint[Math.floor(rand() * tint.length)] }; });
+    type Shot = { x: number; y: number; vx: number; vy: number; life: number };
+    let shots: Shot[] = []; let nextShot = 3;
+    let raf = 0; let tx = 0, ty = 0, cx = 0, cy = 0; const t0 = performance.now(); let last = t0;
     const onMove = (e: PointerEvent) => { tx = e.clientX / window.innerWidth - 0.5; ty = e.clientY / window.innerHeight - 0.5; };
     const tick = (now: number) => {
-      const t = (now - t0) / 1000; const el = root.current;
+      const t = (now - t0) / 1000; const dt = Math.min(0.05, (now - last) / 1000); last = now;
       cx += (tx - cx) * 0.04; cy += (ty - cy) * 0.04;
-      if (el) {
-        const st = el.style; st.setProperty('--px', cx.toFixed(4)); st.setProperty('--py', cy.toFixed(4));
-        // deriva autónoma por profundidad: lenta, continua y sin saltos (el fondo se mueve aunque el mouse esté quieto)
-        st.setProperty('--nx', (Math.sin(t / 22) * 18).toFixed(2)); st.setProperty('--ny', (Math.cos(t / 27) * 12).toFixed(2));
-        st.setProperty('--fx', (Math.sin(t / 25) * 14).toFixed(2)); st.setProperty('--fy', (Math.sin(t / 31) * 8).toFixed(2));
-        st.setProperty('--rx', (Math.sin(t / 17 + 1) * 34).toFixed(2)); st.setProperty('--ry', (Math.cos(t / 19) * 22).toFixed(2));
-        st.setProperty('--dx', (Math.sin(t / 13 + 2) * 52).toFixed(2)); st.setProperty('--dy', (Math.cos(t / 15) * 30).toFixed(2));
-        st.setProperty('--tw', (0.82 + 0.18 * Math.sin(t / 2.6)).toFixed(3));
+      const st = el.style; st.setProperty('--px', cx.toFixed(4)); st.setProperty('--py', cy.toFixed(4));
+      // deriva autónoma por profundidad: continua y visible aunque el mouse esté quieto
+      st.setProperty('--nx', (Math.sin(t / 14) * 46).toFixed(2)); st.setProperty('--ny', (Math.cos(t / 17) * 30).toFixed(2));
+      st.setProperty('--ns', (1.04 + 0.025 * Math.sin(t / 9)).toFixed(4));
+      st.setProperty('--fx', (Math.sin(t / 19) * 40).toFixed(2)); st.setProperty('--fy', (Math.sin(t / 23) * 22).toFixed(2));
+      st.setProperty('--rx', (Math.sin(t / 11 + 1) * 80).toFixed(2)); st.setProperty('--ry', (Math.cos(t / 13) * 48).toFixed(2));
+      st.setProperty('--dx', (Math.sin(t / 9 + 2) * 110).toFixed(2)); st.setProperty('--dy', (Math.cos(t / 10) * 64).toFixed(2));
+      st.setProperty('--tw', (0.8 + 0.2 * Math.sin(t / 1.8)).toFixed(3));
+      // capa animada de estrellas
+      ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter';
+      for (const s of stars) {
+        s.x += s.vx * dt; s.y += s.vy * dt; if (s.x > W + 10) s.x = -10; if (s.y > H + 10) s.y = -10; else if (s.y < -10) s.y = H + 10;
+        const a = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * s.sp + s.ph));
+        ctx.globalAlpha = a * (0.45 + s.z * 0.55); ctx.fillStyle = s.c;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill();
+        if (s.z > 0.86) { ctx.globalAlpha = a * 0.25; ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 3.4, 0, 6.283); ctx.fill(); }
       }
+      // estrellas fugaces ocasionales
+      nextShot -= dt; if (nextShot <= 0) { nextShot = 6 + Math.random() * 9; const y = Math.random() * H * 0.6; shots.push({ x: Math.random() * W * 0.6, y, vx: 900 + Math.random() * 500, vy: 260 + Math.random() * 260, life: 1 }); }
+      shots = shots.filter(s => s.life > 0);
+      for (const s of shots) {
+        s.x += s.vx * dt; s.y += s.vy * dt; s.life -= dt * 1.1;
+        const L = 0.09; const g = ctx.createLinearGradient(s.x, s.y, s.x - s.vx * L, s.y - s.vy * L); g.addColorStop(0, 'rgba(255,244,214,1)'); g.addColorStop(1, 'rgba(255,244,214,0)');
+        ctx.globalAlpha = Math.max(0, s.life); ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x - s.vx * L, s.y - s.vy * L); ctx.stroke();
+      }
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
       raf = requestAnimationFrame(tick);
     };
     window.addEventListener('pointermove', onMove); raf = requestAnimationFrame(tick);
@@ -156,6 +184,7 @@ export default function Cosmos() {
     <canvas ref={nebula} className="cosmos-layer cosmos-nebula" width={960} height={540} />
     <canvas ref={far} className="cosmos-layer cosmos-far" width={1920} height={1080} />
     <canvas ref={near} className="cosmos-layer cosmos-near" width={1920} height={1080} />
+    <canvas ref={sky} className="cosmos-layer cosmos-sky" width={1920} height={1080} />
     <div className="cosmos-motes">{Array.from({ length: 26 }, (_, i) => <i key={i} style={{ left: `${(i * 41 + 7) % 100}%`, top: `${(i * 67 + 13) % 100}%`, ['--dur' as string]: `${34 + (i * 7) % 40}s`, ['--dl' as string]: `${-(i * 5) % 30}s`, ['--sz' as string]: `${2 + (i % 4)}px`, ['--c' as string]: i % 3 === 0 ? '#79d8dc' : '#f0c36d' }} />)}</div>
     <canvas ref={dust} className="cosmos-layer cosmos-dust" width={960} height={540} />
     <div className="cosmos-grain" />

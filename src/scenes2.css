@@ -181,7 +181,6 @@
 /* movimiento reducido (interruptor de la interfaz) */
 .motion-reduced .flow-dot,.motion-reduced .flow-bit{display:none}
 .motion-reduced .world-sway,.motion-reduced .gate-spin,.motion-reduced .gate-spin-rev,.motion-reduced .gate-spin-slow,.motion-reduced .cut-pop{animation:none!important}
-@media (prefers-reduced-motion:reduce){.dive-tunnel i,.dive-tunnel:before{display:none}.world-sway{animation:none}}
 /* ---------- Cosmos: deriva autónoma y centelleo ---------- */
 .cosmos-nebula{transform:translate3d(calc(var(--px)*-16px + var(--nx,0)*1px),calc(var(--py)*-10px + var(--ny,0)*1px),0)}
 .cosmos-far{transform:translate3d(calc(var(--px)*-9px + var(--fx,0)*1px),calc(var(--py)*-6px + var(--fy,0)*1px),0)}

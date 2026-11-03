@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
+import { stillMode } from '../motion';
 
 /** Preferencia de movimiento reducido compartida por contexto (sin interruptor público). */
 export const MotionCtx = createContext(false);
@@ -40,9 +41,7 @@ export function curve(a: [number, number], b: [number, number], bend = 60, wob =
 
 export function useReducedMotion() {
   const manual = useContext(MotionCtx);
-  const [r, setR] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  useEffect(() => { const m = window.matchMedia('(prefers-reduced-motion: reduce)'); const h = () => setR(m.matches); m.addEventListener('change', h); return () => m.removeEventListener('change', h); }, []);
-  return r || manual;
+  return manual || stillMode;
 }
 
 export function Flow({ paths, active, reduced }: { paths: FlowPath[]; active?: string | null; reduced?: boolean }) {
