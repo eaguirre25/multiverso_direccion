@@ -49,11 +49,11 @@ export function Flow({ paths, active, reduced }: { paths: FlowPath[]; active?: s
   return <svg className="art-lines" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
     {paths.map((p, pi) => {
       const hot = !!active && !!p.tags?.includes(active); const dim = !!active && !hot;
-      const n = p.n ?? 3; const dur = p.dur ?? 7; const dir = p.dir ?? 1;
+      const n = Math.min(p.n ?? 3, 2); const dur = p.dur ?? 7; const dir = p.dir ?? 1;
       const style = { ['--h' as string]: p.hue ?? 190, ['--w' as string]: p.width ?? 1, animationDelay: `${p.delay ?? 0}s` } as React.CSSProperties;
       return <g key={p.id} className={`flow${hot ? ' flow-on' : ''}${dim ? ' flow-dim' : ''}${p.dash ? ' flow-dash' : ''}${p.blink ? ' flow-blink' : ''}`} style={style}>
-        <path className="flow-glow" d={p.d}>{p.d2 && !still && <animate attributeName="d" dur={`${dur * 2.2}s`} repeatCount="indefinite" values={`${p.d};${p.d2};${p.d}`} />}</path>
-        <path className="flow-line" d={p.d}>{p.d2 && !still && <animate attributeName="d" dur={`${dur * 2.2}s`} repeatCount="indefinite" values={`${p.d};${p.d2};${p.d}`} />}</path>
+        <path className="flow-glow" d={p.d}></path>
+        <path className="flow-line" d={p.d}></path>
         {!still && Array.from({ length: n }, (_, i) => {
           const back = dir === -1 || (dir === 0 && i % 2 === 1);
           const common = { dur: `${dur + (i % 3) * 0.7}s`, repeatCount: 'indefinite', begin: `${-(i * dur) / n - pi * 0.37}s`, path: p.d, ...(back ? { keyPoints: '1;0', keyTimes: '0;1', calcMode: 'linear' } : {}) };

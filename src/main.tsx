@@ -7,5 +7,6 @@ import './scenes.css';
 import './scenes2.css';
 import './final.css';
 import './v4.css';
+import './perf.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);

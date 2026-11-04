@@ -62,3 +62,7 @@ Archivos nuevos: `src/components/Cutout.tsx` (títulos de recortes en SVG con pa
 ## Uso permanente en esta PC (sin internet, sin servidor)
 
 `npm run build` genera `dist/`, que se abre con doble clic (`index.html`). Para instalarla de forma permanente: ejecutar `scripts/instalar-en-esta-pc.bat`, que copia la presentación a `C:\Users\<usuario>\Multiverso` y crea un acceso directo en el Escritorio que la abre en pantalla completa con Edge. No depende de esta carpeta de desarrollo ni se pierde al reiniciar. El movimiento siempre está activo; `?quieto` en la dirección lo detiene (prueba de accesibilidad).
+
+## Rendimiento (GPU integrada)
+
+Las animaciones usan capas independientes (giro, opacidad y transformaciones) que resuelve la GPU, sin filtros ni mezclas que se recalculen por cuadro. `Abrir Multiverso.bat` abre Edge con aceleración por GPU, prioridad alta y sin ahorro de segundo plano; si el plan de energía no es de alto rendimiento lo activa mientras dure la presentación y lo restaura al cerrar. Conviene tener el cargador conectado y cerrar otras aplicaciones.

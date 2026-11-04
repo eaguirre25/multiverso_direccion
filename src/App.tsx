@@ -42,9 +42,14 @@ const filament = (i: number, mul = 1) => {
   return `M${x0.toFixed(0)} ${y0.toFixed(0)} Q${cx.toFixed(0)} ${cy.toFixed(0)} ${gx.toFixed(0)} ${gy.toFixed(0)}`;
 };
 
-function FilPath({ i, className, style, filter, live }: { i: number; className: string; style?: React.CSSProperties; filter?: string; live: boolean }) {
+function FilPath({ i, className, filter }: { i: number; className: string; filter?: string; live?: boolean }) {
+  return <path d={filament(i)} className={className} filter={filter} />;
+}
+// Partículas de luz que recorren cada conexión (animación SMIL: repinta solo un punto diminuto por cuadro).
+function FilDots({ i, still }: { i: number; still: boolean }) {
+  if (still) return null;
   const d = filament(i);
-  return <path d={d} className={className} style={style} filter={filter}>{live && <animate attributeName="d" dur={`${15 + i * 1.7}s`} repeatCount="indefinite" values={`${d};${filament(i, -0.55)};${d}`} />}</path>;
+  return <>{[0, 1].map(k => <circle key={k} className="fil-dot" r={k ? 4 : 6}><animateMotion dur={`${7 + i * 0.6 + k * 2.5}s`} begin={`${-i * 1.1 - k * 3.5}s`} repeatCount="indefinite" path={d} {...(k ? { keyPoints: '1;0', keyTimes: '0;1', calcMode: 'linear' } : {})} /></circle>)}</>;
 }
 
 const toggleFullscreen = () => { if (document.fullscreenElement) void document.exitFullscreen(); else void document.documentElement.requestFullscreen?.(); };
@@ -70,21 +75,21 @@ export default function App() {
   /* ---- Navegación dimensional centralizada ----------------------------------
      Todo cambio de universo pasa por el mapa y atraviesa un portal:
      salida → mapa visible (≈1 s) → conexión y anillo del destino → túnel → universo. */
-  const showMap = () => { setScene('map'); setReturning(true); later(() => setReturning(false), 2200); };
-  const leaveThen = (next: () => void) => { setLeaving(true); later(() => { setLeaving(false); next(); }, reduced ? 30 : 650); };
+  const showMap = () => { setScene('map'); setReturning(true); later(() => setReturning(false), 1200); };
+  const leaveThen = (next: () => void) => { setLeaving(true); later(() => { setLeaving(false); next(); }, reduced ? 30 : 350); };
   const dive = (index: number) => {
     setTargetPortal(index);
-    later(() => { setPortalIndex(index); setStoryIndex(null); setScene('portal'); setTargetPortal(null); setHoverGate(null); setEntering(true); busy.current = false; later(() => setEntering(false), 2400); }, reduced ? 30 : 1750);
+    later(() => { setPortalIndex(index); setStoryIndex(null); setScene('portal'); setTargetPortal(null); setHoverGate(null); setEntering(true); busy.current = false; later(() => setEntering(false), 1300); }, reduced ? 30 : 950);
   };
   const openPortal = (index: number) => { if (busy.current) return; busy.current = true; dive(index); };
   const navigateToPortal = (target: number) => {
     if (busy.current) return; busy.current = true; setStoryIndex(null);
-    const viaMap = () => { showMap(); later(() => setHoverGate(target), reduced ? 0 : 450); later(() => dive(target), reduced ? 30 : 1100); };
+    const viaMap = () => { showMap(); later(() => setHoverGate(target), reduced ? 0 : 150); later(() => dive(target), reduced ? 30 : 450); };
     if (scene === 'portal' || scene === 'thanks') leaveThen(viaMap); else viaMap();
   };
   const goMap = () => { if (busy.current || scene === 'map' || scene === 'cover') return; busy.current = true; setStoryIndex(null); leaveThen(() => { showMap(); busy.current = false; }); };
-  const goThanks = () => { if (busy.current) return; busy.current = true; leaveThen(() => { setScene('thanks'); setEntering(true); later(() => setEntering(false), 2000); busy.current = false; }); };
-  const enterMap = () => { if (busy.current) return; busy.current = true; setTransitioning(true); later(() => showMap(), reduced ? 10 : 1050); later(() => { setTransitioning(false); busy.current = false; }, reduced ? 20 : 1950); };
+  const goThanks = () => { if (busy.current) return; busy.current = true; leaveThen(() => { setScene('thanks'); setEntering(true); later(() => setEntering(false), 1100); busy.current = false; }); };
+  const enterMap = () => { if (busy.current) return; busy.current = true; setTransitioning(true); later(() => showMap(), reduced ? 10 : 700); later(() => { setTransitioning(false); busy.current = false; }, reduced ? 20 : 1350); };
   const next = () => { if (portalIndex < portals.length - 1) navigateToPortal(portalIndex + 1); else goThanks(); };
   const prev = () => { if (portalIndex > 0) navigateToPortal(portalIndex - 1); else goMap(); };
 
@@ -131,7 +136,7 @@ export default function App() {
         <svg className="filaments" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
           <defs><filter id="fil-glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter></defs>
           {gates.map((_, i) => <g key={i} className={`filament${hoverGate === i ? ' on' : ''}${hoverGate !== null && hoverGate !== i ? ' off' : ''}${targetPortal === i ? ' on' : ''}`} style={{ ['--h' as string]: HUES[i], ['--i' as string]: i }}>
-            <FilPath i={i} className="fil-glow" filter="url(#fil-glow)" live={!reduced}/><FilPath i={i} className="fil-line" live={!reduced}/><FilPath i={i} className="fil-pulse" style={{ animationDelay: `${-i * 1.3}s` }} live={!reduced}/><FilPath i={i} className="fil-pulse fil-back" style={{ animationDelay: `${-i * 0.9 - 2}s` }} live={!reduced}/>
+            <FilPath i={i} className="fil-glow"/><FilPath i={i} className="fil-line"/><FilDots i={i} still={reduced}/>
           </g>)}
         </svg>
         <div className="school-core"><div className="school-shadow"/><img src="./assets/school/escuela-flotante.svg" alt="Una escuela secundaria pública argentina flotando sobre un fragmento de suelo, entre raíces y ladrillos"/></div>

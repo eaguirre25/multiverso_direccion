@@ -1,0 +1,74 @@
+/* ==================================================================
+   Rendimiento y velocidad de las transiciones.
+   Pensado para una GPU integrada: sin filtros ni mezclas que se recalculen
+   por cuadro; solo animaciones de transformación y opacidad (las resuelve la GPU).
+   ================================================================== */
+
+/* ---------- Cosmos ---------- */
+.cosmos-nebula{filter:none;animation:none;will-change:transform}
+.cosmos-dust{filter:none;will-change:transform}
+.cosmos-far,.cosmos-near,.cosmos-sky{will-change:transform,opacity}
+.cosmos-near{animation:none}
+.cosmos-grain{display:none}
+.cosmos-motes i:nth-child(n+13){display:none}
+.cosmos-motes i{box-shadow:0 0 5px 1px var(--c)}
+
+/* ---------- Portales: capas independientes que giran/pulsan en la GPU ---------- */
+.gate-art{position:relative;display:block;width:100%;height:100%;animation:gate-bob 7s ease-in-out infinite;animation-delay:calc(var(--i,0)*-.9s);will-change:transform}
+.gl{position:absolute;inset:0;width:100%;height:100%;overflow:visible;will-change:transform}
+.gl-halo{animation:halo-beat 3.2s ease-in-out infinite alternate;will-change:transform,opacity}
+.gl-slow{animation:gspin 28s linear infinite}
+.gl-spin{animation:gspin 13s linear infinite}
+.gl-rev{animation:gspin 17s linear infinite reverse}
+.gl-orb{animation:gspin 34s linear infinite}
+.gl-sparks{animation:spark-layer 1.1s ease-in-out infinite alternate;will-change:opacity}
+@keyframes spark-layer{from{opacity:.35}to{opacity:1}}
+.gate-tilt{filter:none}
+.gate-approach .gl-spin{animation-duration:1.2s}
+.gate-approach .gl-rev{animation-duration:1.5s}
+.gate-approach .gl-slow{animation-duration:2.4s}
+.gate-approach .gate-tilt{transform:perspective(900px) rotateY(0) rotateZ(0) scale(1.7)!important;filter:brightness(1.6)!important;transition:transform .9s cubic-bezier(.5,0,.8,.3),filter .5s!important}
+
+/* ---------- Conexiones del mapa y de los universos ---------- */
+.fil-glow{filter:none;stroke-width:9px;stroke:hsl(var(--h) 90% 62%/.14)}
+.filament.on .fil-glow{stroke:hsl(var(--h) 95% 66%/.4);stroke-width:14px}
+.fil-dot{fill:hsl(var(--h) 100% 92%);stroke:hsl(var(--h) 100% 70%/.4);stroke-width:7px;vector-effect:none}
+.filament.on .fil-dot{stroke:hsl(var(--h) 100% 80%/.7);stroke-width:11px}
+.flow-glow{filter:none;stroke-width:7px;stroke:hsl(var(--h) 95% 62%/.14)}
+.flow-dot{filter:none;stroke:hsl(var(--h) 100% 70%/.35);stroke-width:5px}
+.flow-bit{filter:none}
+.scene-art{filter:none}
+.scrap.core,.scrap.emerge{animation:scrap-in .7s cubic-bezier(.2,.8,.25,1.12) var(--d,0ms) both}
+.cutout-svg{filter:drop-shadow(0 6px 4px rgba(0,0,0,.55))}
+
+/* ---------- Escuela flotante ---------- */
+.school-halo{filter:none;will-change:opacity}
+.school-rays{mix-blend-mode:normal;opacity:.28;will-change:transform}
+.school-core{will-change:transform}
+
+/* ---------- Transiciones más rápidas (sin desenfoques de pantalla completa) ---------- */
+.scene-in{animation:scene-enter .4s cubic-bezier(.18,.67,.25,1) both}
+@keyframes scene-enter{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+.cover-out{animation:cover-fade .6s ease-in forwards!important}
+@keyframes cover-fade{to{opacity:0;transform:scale(1.05)}}
+.stage.diving{animation:dive .95s cubic-bezier(.5,0,.75,.35) forwards!important}
+@keyframes dive{0%{transform:scale(1)}28%{transform:scale(1.1)}100%{transform:scale(12)}}
+.dive-tunnel b{animation:tun-wash .95s ease-in forwards}
+.dive-tunnel:before{animation:tun-streak .95s ease-in forwards}
+.dive-tunnel i{animation:tun-ring .65s cubic-bezier(.4,0,.9,.6) forwards}
+.dive-tunnel i:nth-of-type(1){animation-delay:.2s}.dive-tunnel i:nth-of-type(2){animation-delay:.32s}.dive-tunnel i:nth-of-type(3){animation-delay:.44s}.dive-tunnel i:nth-of-type(4){display:none}
+.portal-scene.entering{animation:universe-in .55s cubic-bezier(.2,.7,.2,1) both}
+.portal-scene.entering:after{animation:atmos-in .9s ease-out both}
+.portal-scene.entering .portal-heading{animation:rise .45s .1s cubic-bezier(.2,.8,.2,1) both}
+.portal-scene.entering .art-slot{animation:rise .5s .2s cubic-bezier(.2,.8,.2,1) both}
+.portal-scene.entering .portal-copy{animation:rise .45s .3s cubic-bezier(.2,.8,.2,1) both}
+.portal-scene.leaving,.thanks.leaving{animation:universe-out .33s cubic-bezier(.5,0,.8,.4) forwards!important}
+.thanks.entering{animation:universe-in .55s cubic-bezier(.2,.7,.2,1) both}
+@keyframes universe-in{from{opacity:0;transform:scale(1.12)}to{opacity:1;transform:none}}
+@keyframes atmos-in{from{opacity:0}to{opacity:1}}
+@keyframes universe-out{to{opacity:0;transform:scale(.7)}}
+.map-return .stage{animation:map-in .55s cubic-bezier(.2,.7,.2,1) both}
+.map-return .gate{animation:gate-in .45s cubic-bezier(.2,.8,.2,1.1) both;animation-delay:calc(.08s + var(--i,0)*35ms)}
+.map-return .filament{animation:fil-in .6s ease both;animation-delay:calc(.25s + var(--i,0)*40ms)}
+.map-return .school-core{animation:school-in .5s ease both,school-bob 10s ease-in-out .5s infinite}
+@keyframes school-in{from{opacity:0}to{opacity:1}}
